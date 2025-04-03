@@ -11,6 +11,7 @@
 #define GPIO_WATCH_PIN 2
 
 static char event_str[128];
+volatile int counter = 0;
 
 void gpio_event_string(char *buf, uint32_t events);
 
@@ -24,12 +25,17 @@ void gpio_callback(uint gpio, uint32_t events) {
 int main() {
     stdio_init_all();
 
-    printf("Hello GPIO IRQ\n");
     gpio_init(GPIO_WATCH_PIN);
     gpio_set_irq_enabled_with_callback(GPIO_WATCH_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
 
     // Wait forever
-    while (1);
+    while (1){
+        printf("Hello, world!\n");
+        char msg[100];
+        sprintf(msg,"Button pressed %d times.", &counter);
+        printf(msg);
+        sleep_ms(1000);
+    };
 }
 
 
@@ -59,4 +65,5 @@ void gpio_event_string(char *buf, uint32_t events) {
         }
     }
     *buf++ = '\0';
+    counter++;
 }
