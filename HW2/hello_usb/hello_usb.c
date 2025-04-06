@@ -27,6 +27,7 @@
 volatile int counter = 0; // button presses
 volatile int state = 0; // 0 =off 1=on led
 static char event_str[128];
+#define GPIO_WATCH_PIN 15 // set GP15 as button to watch
 
 // Perform initialisation
 int pico_led_init(void) {
@@ -86,6 +87,8 @@ int main() {
     int rc = pico_led_init();
     pico_button_init();
     hard_assert(rc == PICO_OK);
+    gpio_init(GPIO_WATCH_PIN);
+    gpio_set_irq_enabled_with_callback(GPIO_WATCH_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
     while (true) {
 
         while (pico_get_button()){  // wait for the button to be pressed
