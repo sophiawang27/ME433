@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "hardware/gpio.h"
 
 #ifdef CYW43_WL_GPIO_LED_PIN
 #include "pico/cyw43_arch.h"
@@ -25,6 +26,7 @@
 
 volatile int counter = 0; // button presses
 volatile int state = 0; // 0 =off 1=on led
+static char event_str[128];
 
 // Perform initialisation
 int pico_led_init(void) {
@@ -70,6 +72,14 @@ int pico_get_button(void) {
     return button_val;
     }
 
+void gpio_event_string(char *buf, uint32_t events);
+
+void gpio_callback(uint gpio, uint32_t events) {
+        // Put the GPIO event(s) that just happened into event_str
+        // so we can print it
+        gpio_event_string(event_str, events);
+        printf("GPIO %d %s\n", gpio, event_str);
+}
 
 int main() {
     stdio_init_all();
