@@ -92,7 +92,7 @@ int main() {
     gpio_set_irq_enabled_with_callback(GPIO_WATCH_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
     while (true) {
 
-        while (pico_get_button()){  // wait for the button to be pressed
+        while (!GPIO_IRQ_EDGE_FALL){  // wait for the button to be pressed
             ; // do nothing
         }
         if (state){ // if led is on: turn off
