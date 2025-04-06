@@ -78,9 +78,15 @@ int main() {
     hard_assert(rc == PICO_OK);
     while (true) {
 
-        while (!pico_get_button()){
+        while (!pico_get_button()){  // wait for the button to be pressed
             ; // do nothing
         }
+
+
+        // when the button is pressed
+        // invert the led
+        counter ++;// add one to the counter
+        printf("Button pressed %d times.\n", counter);// print button presses
 
 
 
@@ -96,7 +102,7 @@ int main() {
             sleep_ms(LED_DELAY_MS);
             state = 1;
         }**/
-        printf("Button pressed %d times.\n", counter);
-        sleep_ms(50);
+
+        sleep_ms(250);
     }
 }
