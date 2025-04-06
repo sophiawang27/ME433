@@ -81,17 +81,6 @@ int main() {
         while (pico_get_button()){  // wait for the button to be pressed
             ; // do nothing
         }
-
-
-        // when the button is pressed
-        // invert the led
-        counter ++;// add one to the counter
-        printf("Button pressed %d times.\n", counter);// print button presses
-
-
-
-
-        /**
         if (state){
             pico_set_led(false);
             sleep_ms(LED_DELAY_MS);
@@ -101,7 +90,13 @@ int main() {
             pico_set_led(true);
             sleep_ms(LED_DELAY_MS);
             state = 1;
-        }**/
+        }
+
+
+        // when the button is pressed
+        // invert the led
+        counter ++;// add one to the counter
+        printf("Button pressed %d times.\n", counter);// print button presses
 
         sleep_ms(250);
     }
