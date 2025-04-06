@@ -23,6 +23,8 @@
 #define PICO_BUTTON_GP15 15
 #endif
 
+volatile int counter = 0;
+
 // Perform initialisation
 int pico_led_init(void) {
 #if defined(PICO_LED_GP14)
@@ -74,8 +76,11 @@ int main() {
     pico_button_init();
     hard_assert(rc == PICO_OK);
     while (true) {
-        printf("Hello, world!\n");
-
+        printf("Button pressed %d times.\n", counter);
+        while (!pico_get_button()){
+            ; // do nothing
+        }
+        
         pico_set_led(true);
         sleep_ms(LED_DELAY_MS);
         pico_set_led(false);
