@@ -105,9 +105,6 @@ int main() {
             state = 1;
         }
 
-
-        // when the button is pressed
-        // invert the led
         counter ++;// add one to the counter
         printf("Button pressed %d times.\n", counter);// print button presses
 
