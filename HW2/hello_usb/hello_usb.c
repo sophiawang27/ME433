@@ -23,8 +23,8 @@
 #define PICO_BUTTON_GP15 15
 #endif
 
-volatile int counter = 0;
-volatile int state = 0; // 0 =off 1=on
+volatile int counter = 0; // button presses
+volatile int state = 0; // 0 =off 1=on led
 
 // Perform initialisation
 int pico_led_init(void) {
@@ -81,12 +81,12 @@ int main() {
         while (pico_get_button()){  // wait for the button to be pressed
             ; // do nothing
         }
-        if (state){
+        if (state){ // if led is on: turn off
             pico_set_led(false);
             sleep_ms(LED_DELAY_MS);
             state = 0;
         }
-        else if(state == 0){
+        else if(state == 0){ // if led is off: turn on 
             pico_set_led(true);
             sleep_ms(LED_DELAY_MS);
             state = 1;
