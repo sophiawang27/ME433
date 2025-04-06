@@ -84,6 +84,7 @@ void gpio_callback(uint gpio, uint32_t events) {
 
 int main() {
     stdio_init_all();
+    uint32_t trigger;
     int rc = pico_led_init();
     pico_button_init();
     hard_assert(rc == PICO_OK);
@@ -104,6 +105,8 @@ int main() {
             sleep_ms(LED_DELAY_MS);
             state = 1;
         }
+        gpio_event_string(event_str, trigger);
+        gpio_callback(PICO_BUTTON_GP15, trigger);
 
         counter ++;// add one to the counter
         printf("Button pressed %d times.\n", counter);// print button presses
