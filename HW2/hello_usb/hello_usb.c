@@ -78,7 +78,7 @@ int main() {
     hard_assert(rc == PICO_OK);
     while (true) {
 
-        while (!pico_get_button()){  // wait for the button to be pressed
+        while (pico_get_button()){  // wait for the button to be pressed
             ; // do nothing
         }
 
