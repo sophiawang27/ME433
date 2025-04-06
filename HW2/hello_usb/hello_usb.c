@@ -24,6 +24,7 @@
 #endif
 
 volatile int counter = 0;
+volatile int state = 0; // 0 =off 1=on
 
 // Perform initialisation
 int pico_led_init(void) {
@@ -80,11 +81,16 @@ int main() {
         while (!pico_get_button()){
             ; // do nothing
         }
-        
-        pico_set_led(true);
-        sleep_ms(LED_DELAY_MS);
-        pico_set_led(false);
-        sleep_ms(LED_DELAY_MS);
+        if (state){
+            pico_set_led(false);
+            sleep_ms(LED_DELAY_MS);
+            state = 0;
+        }
+        else if(state == 0){
+            pico_set_led(true);
+            sleep_ms(LED_DELAY_MS);
+            state = 1;
+        }
         sleep_ms(50);
     }
 }
