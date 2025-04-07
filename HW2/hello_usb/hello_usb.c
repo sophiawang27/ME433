@@ -100,30 +100,8 @@ int main() {
     pico_button_init();
     hard_assert(rc == PICO_OK);
     gpio_init(GPIO_WATCH_PIN);
-    gpio_set_irq_enabled_with_callback(GPIO_WATCH_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
-    while (true) {
-
-        /**while (gpio_get(PICO_BUTTON_GP15)){  // wait for the button to be pressed triggering irq
-            ; // do nothing
-        }
-
-        if(event_str == "EDGE_FALL"){ // if the triggered event was a falling edge
-            if (state){ // if led is on: turn off
-                pico_set_led(false);
-                sleep_ms(LED_DELAY_MS);
-                state = 0;
-            }
-            else if(state == 0){ // if led is off: turn on 
-                pico_set_led(true);
-                sleep_ms(LED_DELAY_MS);
-                state = 1;
-            }
-            gpio_event_string(event_str, trigger);
-            gpio_callback(PICO_BUTTON_GP15, trigger); // print the reason for interrupt
-
-
-        }**/
-    }
+    gpio_set_irq_enabled_with_callback(GPIO_WATCH_PIN, GPIO_IRQ_EDGE_FALL, true, &gpio_callback);
+    while (true) {}
 }
 
 static const char *gpio_irq_str[] = {
