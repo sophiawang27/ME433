@@ -38,8 +38,10 @@ int main(void)
         scanf("%d", &numsamps);
         for (int i=0; i<numsamps; i++){
             uint16_t adc_val = adc_read();// read adc value and store in adc_val
+            adc_values[i] = adc_val;
             printf("Analog value: %u\n", adc_val); // print the value 
-            // convert 12-bit number to float voltage value
+
+            volt_values[i] = // convert 12-bit number to float voltage value
             // print voltage value
         }
 
