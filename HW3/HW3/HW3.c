@@ -1,7 +1,11 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "hardware/adc.h"
+#include "hardware/resets.h"
 
-
+adc_init(); // init the adc module
+adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
+adc_select_input(0); // select to read from ADC0
 int main()
 {
     stdio_init_all();
