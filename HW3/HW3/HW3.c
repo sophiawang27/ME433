@@ -2,8 +2,8 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-volatile uint16_t adc_values[100];
-volatile float volt_values[100];
+uint16_t adc_values[100];
+float volt_values[100];
 
 int main(void)
 {
