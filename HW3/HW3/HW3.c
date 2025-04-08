@@ -37,12 +37,11 @@ int main(void)
         int numsamps;
         scanf("%d", &numsamps);
         for (int i=0; i<numsamps; i++){
-            uint16_t adc_val = adc_read();// read adc value and store in adc_val
-            adc_values[i] = adc_val;
-            printf("Analog value: %u\n", adc_val); // print the value 
+            adc_values[i] = adc_read();// read adc value and store in adc_values
+            printf("Analog value: %u\n", adc_values[i]); // print the value 
 
-            volt_values[i] = // convert 12-bit number to float voltage value
-            // print voltage value
+            volt_values[i] = adc_values[i]/20000;// convert 12-bit number to float voltage value
+            printf("Voltage vluae: %f", volt_values[i]);// print voltage value
         }
 
         sleep_ms(50);
