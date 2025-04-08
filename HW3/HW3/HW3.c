@@ -2,16 +2,14 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-adc_init(void); // init the adc module
-adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
-adc_select_input(0); // select to read from ADC0
-
-
 uint16_t adc_values[100];
 volatile float voltage;
 
 int main(void)
 {
+    adc_init(); // init the adc module
+    adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
+    adc_select_input(0); // select to read from ADC0
     stdio_init_all();
     while (!stdio_usb_connected()) {
         sleep_ms(100);
