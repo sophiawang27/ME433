@@ -46,7 +46,7 @@ pico_enable_stdio_usb(HW3 1) # change from 0 to 1 to enable USB printf()
 
 # Add the standard library to the build
 target_link_libraries(HW3
-        pico_stdlib)
+        pico_stdlib hardware_adc)
 
 # Add the standard include files to the build
 target_include_directories(HW3 PRIVATE
