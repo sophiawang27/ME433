@@ -41,7 +41,7 @@ int main(void)
             printf("Analog value: %u\n", adc_values[i]); // print the value 
 
             volt_values[i] = adc_values[i]/1240.0;// convert 12-bit number to float voltage value
-            printf("Voltage vluae: %f", volt_values[i]);// print voltage value
+            printf("Voltage vluae: %f\n", volt_values[i]);// print voltage value
         }
 
         sleep_ms(50);
