@@ -13,9 +13,9 @@ int main(void)
     stdio_init_all();
 
     // initialize led and button as output and input
-    gpio_init(14);
+    gpio_init(14); // led
     gpio_set_dir(14, GPIO_OUT);
-    gpio_init(15);
+    gpio_init(15); // button
     gpio_set_dir(15, GPIO_IN);
 
     // wait for connection
@@ -23,8 +23,9 @@ int main(void)
         sleep_ms(100);
     }
     printf("Start!\n");
+
     gpio_put(14, true); // turn on led at the start
- 
+    
     while(gpio_get(15)){
         ; // do nothing until button is pressed
     }
