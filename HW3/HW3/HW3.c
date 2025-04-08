@@ -2,8 +2,8 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-uint16_t adc_values[100];
-volatile float voltage;
+volatile uint16_t adc_values[100];
+volatile float volt_values[100];
 
 int main(void)
 {
@@ -37,11 +37,11 @@ int main(void)
         int numsamps;
         scanf("%d", &numsamps);
         for (int i=0; i<numsamps; i++){
-        uint16_t adc_val = adc_read();// read adc value and store in adc_val
-        printf("12-bit value: %u\n", adc_val); // print the value 
+            uint16_t adc_val = adc_read();// read adc value and store in adc_val
+            printf("Analog value: %u\n", adc_val); // print the value 
+            // convert 12-bit number to float voltage value
+            // print voltage value
         }
-        // convert 12-bit number to float voltage value
-        // print voltage value
 
         sleep_ms(50);
     }
