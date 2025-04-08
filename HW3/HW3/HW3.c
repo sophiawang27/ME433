@@ -11,6 +11,14 @@ int main(void)
     adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
     adc_select_input(0); // select to read from ADC0
     stdio_init_all();
+
+    // initialize led and button as output and input
+    gpio_init(14);
+    gpio_set_dir(14, GPIO_OUT);
+    gpio_init(15);
+    gpio_set_dir(15, GPIO_IN);
+
+    // wait for connection
     while (!stdio_usb_connected()) {
         sleep_ms(100);
     }
