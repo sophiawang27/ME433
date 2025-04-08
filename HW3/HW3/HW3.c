@@ -28,9 +28,7 @@ int main(void)
     while(gpio_get(15)){
         ; // do nothing until button is pressed
     }
-    while(!gpio_get(15)){
-        gpio_put(14, true); // turn on led only when button is pressed
-    }
+    gpio_put(14, false); // turn off led only when button is pressed
     
 
     while (1) {
