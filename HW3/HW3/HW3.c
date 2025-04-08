@@ -7,6 +7,7 @@ adc_init(); // init the adc module
 adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
 adc_select_input(0); // select to read from ADC0
 
+uint16_t adc_values[100];
 volatile float voltage;
 
 int main()
@@ -30,10 +31,12 @@ int main()
         printf("Enter number of analog samples: (1-100) \n");
         int numsamps;
         scanf("%d", &numsamps);
-
+        for (int i=0; i<numsamps; i++){
         uint16_t adc_val = adc_read();// read adc value and store in adc_val
         printf("12-bit value: %u", adc_val); // print the value 
-        
+        }
+        // convert 12-bit number to float voltage value
+        // print voltage value
 
         sleep_ms(50);
     }
