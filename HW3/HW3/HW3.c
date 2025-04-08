@@ -2,7 +2,7 @@
 #include "pico/stdlib.h"
 #include "hardware/adc.h"
 
-adc_init(); // init the adc module
+adc_init(void); // init the adc module
 adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
 adc_select_input(0); // select to read from ADC0
 
