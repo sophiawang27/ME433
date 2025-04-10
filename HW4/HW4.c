@@ -44,13 +44,11 @@ int main()
     // For more examples of SPI use see https://github.com/raspberrypi/pico-examples/tree/master/spi
 
     while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
         int i = 0;
-        float t = 0;
+        float t = 0.0;
         for(i=0; i<100; i++){
             t = t+0.1;
-            float v = 3.3*sin(4*M_PI*t); // 2Hz sine wave
+            float v = 1.65*sin(4.0*M_PI*t) + 1.65; // 2Hz sine wave
             writeDAC(0,v);
             float tri_wave = 3.3*((i++ % 1) +3.3);
             writeDAC(1, tri_wave); // triangle wave
@@ -62,14 +60,16 @@ int main()
 void writeDAC(int channel, float voltage){
     uint8_t data[2];
     int len = 2;
+    // change the first four (leftmost) bits to represent channel and tie values high
     uint16_t d = 0;
     d = d | channel << 15;
     d = d | 0b111 << 12;
-    uint16_t v = (uint16_t)(voltage * 1023.0/ 3.3);
-    d = d | v << 2;
+    // convert the float voltage to a 10-bit analog number
+    uint16_t v = (uint16_t)(voltage * 1023/ 3.3);
+    d = d | v << 2; // add this value to the data
 
-    data[0] = d >> 8;
-    data[1] = d & 0xFF; 
+    data[0] = d >> 8; // leftmost 8 bits
+    data[1] = d & 0xFF;  // rightmost 8 bits
     cs_select(PIN_CS);
     spi_write_blocking(SPI_PORT, data, len); // where data is a uint8_t array with length len
     cs_deselect(PIN_CS);
