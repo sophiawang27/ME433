@@ -38,6 +38,12 @@
     "raspberry-pi-pico.ninjaPath": "${HOME}/.pico-sdk/ninja/v1.12.1/ninja",
     "files.associations": {
         "adc.h": "c",
-        "pico.h": "c"
+        "pico.h": "c",
+        "*.tcc": "c",
+        "cmath": "c",
+        "format": "c",
+        "numeric": "c",
+        "cinttypes": "c",
+        "cstdlib": "c"
     }
 }

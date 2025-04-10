@@ -52,7 +52,7 @@ int main()
             t = t+0.1;
             float v = 3.3*sin(4*M_PI*t); // 2Hz sine wave
             writeDAC(0,v);
-            float tri_wave = 3.3*abs((i++ % 1) +3.3);
+            float tri_wave = 3.3*((i++ % 1) +3.3);
             writeDAC(1, tri_wave); // triangle wave
             sleep_ms(10);
         }
@@ -63,8 +63,8 @@ void writeDAC(int channel, float voltage){
     uint8_t data[2];
     int len = 2;
     uint16_t d = 0;
-    d = d | channel <<15;
-    d = d | 0b111 <<< 12;
+    d = d | channel << 15;
+    d = d | 0b111 << 12;
     //uint16_t v = voltage * / 
     //d = d | v << 2;
 
