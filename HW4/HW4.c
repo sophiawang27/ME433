@@ -52,6 +52,7 @@ int main()
             t = t+0.1;
             float v = 3.3*sin(4*M_PI*t); // 2Hz sine wave
             writeDAC(0,v);
+            float tri_wave = 3.3*abs((i++ % 1) +3.3);
             writeDAC(1, tri_wave); // triangle wave
             sleep_ms(10);
         }
@@ -64,11 +65,11 @@ void writeDAC(int channel, float voltage){
     uint16_t d = 0;
     d = d | channel <<15;
     d = d | 0b111 <<< 12;
-    uint16_t v = voltage * / 
-    d = d | v << 2
+    //uint16_t v = voltage * / 
+    //d = d | v << 2;
 
-    data[0] = d >>8;
-    data[1] = d & 0xFF;; // making 512
+    data[0] = d >> 8;
+    data[1] = d & 0xFF;; 
     cs_select(PIN_CS);
     spi_write_blocking(SPI_PORT, data, len); // where data is a uint8_t array with length len
     cs_deselect(PIN_CS);
