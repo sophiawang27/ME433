@@ -50,7 +50,7 @@ int main()
         float t = 0;
         for(i=0; i<100; i++){
             t = t+0.1;
-            float v = 3.3*sin(2*M_PI*t); // change this to be correct (need to change freq and amplitude)
+            float v = 3.3*sin(4*M_PI*t); // 2Hz sine wave
             writeDAC(0,v);
             writeDAC(1, tri_wave); // triangle wave
             sleep_ms(10);
