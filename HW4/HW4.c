@@ -54,6 +54,10 @@ int main()
     while (true) {
         int i = 0;
         float t = 0.0;
+        int up = 1;
+        float max_val = 3.3;
+        float tri_wave=0;
+        float inc = 1.65*2.0/1000.0;
         for(i=0; i<1000; i++){
             t = t+0.01;
             float v = 1.65*sin(4.0*M_PI*t) + 1.65; // 2Hz sine wave
@@ -61,7 +65,20 @@ int main()
 
             // make the triangle waveform
             //float tri_wave = 1.65*((t % 6) +1.65);
-
+            if (up){
+                tri_wave = tri_wave + inc;
+                if (tri_wave > max_val){
+                    tri_wave = max_val;
+                    up = 0;
+                }
+            }
+            if (!up){
+                tri_wave = tri_wave - inc;
+                if (tri_wave < 0){
+                    tri_wave = 0;
+                    up = 1;
+                }
+            }
 
 
             writeDAC(1, tri_wave); // triangle wave
