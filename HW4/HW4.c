@@ -14,12 +14,14 @@
 
 void writeDAC(int channel, float volt);
 
+// function to turn on and off CS
 static inline void cs_select(uint cs_pin) {
     asm volatile("nop \n nop \n nop"); // FIXME
     gpio_put(cs_pin, 0);
     asm volatile("nop \n nop \n nop"); // FIXME
 }
 
+// 
 static inline void cs_deselect(uint cs_pin) {
     asm volatile("nop \n nop \n nop"); // FIXME
     gpio_put(cs_pin, 1);
@@ -46,18 +48,17 @@ int main()
     while (true) {
         int i = 0;
         float t = 0.0;
-        int up = 1;
-        float max_val = 3.3;
+        int up = 1; // increasing triangle wave = 1, decreasing = 0
+        float max_val = 3.3; // max voltage
         float tri_wave=0;
-        float inc = 1.65*2.0/25.0;
+        float inc = 1.65*2.0/25.0; // increment for triangle wave
         for(i=0; i<10000; i++){
             t = t+0.01;
             float v = 1.65*sin(4.0*M_PI*t) + 1.65; // 2Hz sine wave
             writeDAC(0,v);
 
             // make the triangle waveform
-            //float tri_wave = 1.65*((t % 6) +1.65);
-            if (up){
+            if (up){ // the triangle wave is increasing
                 tri_wave = tri_wave + inc;
                 if (tri_wave > max_val){
                     tri_wave = max_val;
@@ -65,7 +66,7 @@ int main()
                 }
             }
 
-            if (!up){
+            if (!up){ // the triangle wave is decreasing
                 tri_wave = tri_wave - inc;
                 if (tri_wave < 0){
                     tri_wave = 0;
@@ -74,7 +75,7 @@ int main()
             }
 
             writeDAC(1, tri_wave); // triangle wave
-            sleep_ms(10);
+            sleep_ms(10); 
         }
     }
 }
