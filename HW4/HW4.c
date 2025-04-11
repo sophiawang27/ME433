@@ -26,14 +26,6 @@ static inline void cs_deselect(uint cs_pin) {
     asm volatile("nop \n nop \n nop"); // FIXME
 }
 
-float make_tri_wave(void){
-    int up = 1;
-    float max_val = 3.3;
-    float tri_wave;
-    if (up){
-        tri_wave = 
-    }
-}
 
 int main()
 {
