@@ -26,6 +26,14 @@ static inline void cs_deselect(uint cs_pin) {
     asm volatile("nop \n nop \n nop"); // FIXME
 }
 
+float make_tri_wave(void){
+    int up = 1;
+    float max_val = 3.3;
+    float tri_wave;
+    if (up){
+        tri_wave = 
+    }
+}
 
 int main()
 {
@@ -46,11 +54,16 @@ int main()
     while (true) {
         int i = 0;
         float t = 0.0;
-        for(i=0; i<100; i++){
-            t = t+0.1;
+        for(i=0; i<1000; i++){
+            t = t+0.01;
             float v = 1.65*sin(4.0*M_PI*t) + 1.65; // 2Hz sine wave
             writeDAC(0,v);
-            float tri_wave = 3.3*((i++ % 1) +3.3);
+
+            // make the triangle waveform
+            //float tri_wave = 1.65*((t % 6) +1.65);
+
+
+
             writeDAC(1, tri_wave); // triangle wave
             sleep_ms(10);
         }
