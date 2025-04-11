@@ -51,7 +51,7 @@ int main()
         int up = 1; // increasing triangle wave = 1, decreasing = 0
         float max_val = 3.3; // max voltage
         float tri_wave=0;
-        float inc = 1.65*2.0/25.0; // increment for triangle wave
+        float inc = 1.65*2.0/50.0; // increment for triangle wave
         for(i=0; i<10000; i++){
             t = t+0.01;
             float v = 1.65*sin(4.0*M_PI*t) + 1.65; // 2Hz sine wave
