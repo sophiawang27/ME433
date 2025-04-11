@@ -49,8 +49,8 @@ int main()
         int up = 1;
         float max_val = 3.3;
         float tri_wave=0;
-        float inc = 1.65*2.0/1000.0;
-        for(i=0; i<1000; i++){
+        float inc = 1.65*2.0/25.0;
+        for(i=0; i<10000; i++){
             t = t+0.01;
             float v = 1.65*sin(4.0*M_PI*t) + 1.65; // 2Hz sine wave
             writeDAC(0,v);
@@ -64,6 +64,7 @@ int main()
                     up = 0;
                 }
             }
+
             if (!up){
                 tri_wave = tri_wave - inc;
                 if (tri_wave < 0){
@@ -71,7 +72,6 @@ int main()
                     up = 1;
                 }
             }
-
 
             writeDAC(1, tri_wave); // triangle wave
             sleep_ms(10);
