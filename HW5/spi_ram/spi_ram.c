@@ -55,13 +55,13 @@ int main()
     
     init_ram();
 
-    for i=0 to 1000
+    for (int i=0; i<1000; i++){
         calculate v = sin(t)
         ram_write(address, v)
+    }
     
     while (true) {
-        // read from one address
-        float v = ram_read(address)
+        float v = ram_read(address) // read from one address
         // send the float to the DAC (copy in form HW4)
         sleep_ms(1);
     }
@@ -79,9 +79,9 @@ void init_ram(void){
 
 void ram_write(uint16_t a, float v){
     uint8_t buff[7];
-    buff[0] = 0b00000010// send instruction
-    buff[1] = a >> 8
-    buff[2] = a & 0xFF// send address
+    buff[0] = 0b00000010; // send instruction
+    buff[1] = a >> 8;
+    buff[2] = a & 0xFF;// send address
 
     union FloatInt num;
     num.f = v;
