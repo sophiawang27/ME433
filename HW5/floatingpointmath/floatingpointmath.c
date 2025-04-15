@@ -29,7 +29,7 @@ int main()
     }
     absolute_time_t t2sub = get_absolute_time();
     uint64_t end_timesub = to_us_since_boot(t2sub);
-    int comp_timesub = (int)(((float)(end_time - start_time) / 1000.0) / 0.00667);
+    int comp_timesub = (int)(((float)(end_timesub - start_timesub) / 1000.0) / 0.00667);
     printf("\nComputation time for floating point subtraction: %d\n", comp_timesub);
 
     absolute_time_t t1mult = get_absolute_time();
@@ -39,7 +39,7 @@ int main()
     absolute_time_t t2mult = get_absolute_time();
     uint64_t start_timemult = to_us_since_boot(t1mult);
     uint64_t end_timemult = to_us_since_boot(t2mult);
-    int comp_timemult = (int)(((float)(end_time - start_time) / 1000.0) / 0.00667);
+    int comp_timemult = (int)(((float)(end_timemult - start_timemult) / 1000.0) / 0.00667);
     printf("\nComputation time for floating point multiplication: %d\n", comp_timemult);
 
     absolute_time_t t1div = get_absolute_time();
@@ -49,7 +49,7 @@ int main()
     }
     absolute_time_t t2div = get_absolute_time();
     uint64_t end_timediv = to_us_since_boot(t2div);
-    int comp_timediv = (int)(((float)(end_time - start_time) / 1000.0) / 0.00667);
+    int comp_timediv = (int)(((float)(end_timediv - start_timediv) / 1000.0) / 0.00667);
     printf("\nComputation time for floating point division: %d\n", comp_timediv);
     printf("\nResults: \n%f+%f=%f \n%f-%f=%f \n%f*%f=%f \n%f/%f=%f\n", f1,f2,f_add, f1,f2,f_sub, f1,f2,f_mult, f1,f2,f_div);
 
