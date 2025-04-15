@@ -51,7 +51,5 @@ int main()
     uint64_t comp_timediv = ((end_timediv - start_timediv)/1000)/0.00667;
     printf("\nComputation time for floating point division: %llu\n", comp_timediv);
     printf("\nResults: \n%f+%f=%f \n%f-%f=%f \n%f*%f=%f \n%f/%f=%f\n", f1,f2,f_add, f1,f2,f_sub, f1,f2,f_mult, f1,f2,f_div);
-    while (true) {
 
-    }
 }
