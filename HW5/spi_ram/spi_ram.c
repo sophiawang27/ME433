@@ -10,10 +10,26 @@
 #define PIN_CS   17
 #define PIN_SCK  18
 #define PIN_MOSI 19
+#define RAM_CS 13
 
 void init_ram(void);
 void ram_write(uint16_t a, float v);
 float ram_read(uint16_t a);
+
+// function to turn on and off CS
+static inline void cs_select(uint cs_pin) {
+    asm volatile("nop \n nop \n nop"); // FIXME
+    gpio_put(cs_pin, 0);
+    asm volatile("nop \n nop \n nop"); // FIXME
+}
+
+// function to turn off cs
+static inline void cs_deselect(uint cs_pin) {
+    asm volatile("nop \n nop \n nop"); // FIXME
+    gpio_put(cs_pin, 1);
+    asm volatile("nop \n nop \n nop"); // FIXME
+}
+
 
 union FloatInt {
     float f;
@@ -54,8 +70,8 @@ int main()
 
 void init_ram(void){
     uint8_t buff[2]
-    buff[0] = 0b00000101 // change status register
-    buff[1] = 0b01000000 // to sequential mode
+    buff[0] = 0b00000101; // change status register
+    buff[1] = 0b01000000; // to sequential mode
     cs low\
     spi_write_blocking(spi_default,buff,2);
     cs high
@@ -75,9 +91,9 @@ void ram_write(uint16_t a, float v){
     buff[5] = //float
     buff[6] = //float rightmost
 
-    cs low\
+    cs_deselect(RAM_CS);
     spi_write_blocking(spi_default,buff,7);
-    cs high
+    cs_select(RAM_CS);
 }
 
 
