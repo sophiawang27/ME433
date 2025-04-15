@@ -12,9 +12,9 @@
 #define PIN_MOSI 19
 #define RAM_CS 13
 
-void init_ram(void);
-void ram_write(uint16_t a, float v);
-float ram_read(uint16_t a);
+void init_ram(void); // initialize the ram (sequential operation)
+void ram_write(uint16_t a, float v); // write from pico to ram
+float ram_read(uint16_t a); // read from ram to DAC
 
 // function to turn on and off CS
 static inline void cs_select(uint cs_pin) {
@@ -30,7 +30,7 @@ static inline void cs_deselect(uint cs_pin) {
     asm volatile("nop \n nop \n nop"); // FIXME
 }
 
-
+// create new var type
 union FloatInt {
     float f;
     uint32_t i;
@@ -51,9 +51,12 @@ int main()
     // Chip select is active-low, so we'll initialise it to a driven-high state
     gpio_set_dir(PIN_CS, GPIO_OUT);
     gpio_put(PIN_CS, 1);
+    gpio_set_dir(RAM_CS, GPIO_OUT);
+    gpio_put(RAM_CS, 1);
     // For more examples of SPI use see https://github.com/raspberrypi/pico-examples/tree/master/spi
     
-    init_ram();
+    init_ram(); // initialize sequential operation
+
 
     for (int i=0; i<1000; i++){
         calculate v = sin(t)
@@ -61,25 +64,25 @@ int main()
     }
     
     while (true) {
-        float v = ram_read(address) // read from one address
+        float voltage = ram_read(address) // read from one address
         // send the float to the DAC (copy in form HW4)
-        sleep_ms(1);
+        sleep_ms(1); // delay one ms
     }
 }
 
-
+// initialize the ram chip with sequential mode
 void init_ram(void){
-    uint8_t buff[2]
+    uint8_t buff[2];
     buff[0] = 0b00000101; // change status register
     buff[1] = 0b01000000; // to sequential mode
-    cs low\
+    cs_deselect(RAM_CS);
     spi_write_blocking(spi_default,buff,2);
-    cs high
+    cs_select(RAM_CS);
 }
 
 void ram_write(uint16_t a, float v){
     uint8_t buff[7];
-    buff[0] = 0b00000010; // send instruction
+    buff[0] = 0b00000010; // send instruction to write
     buff[1] = a >> 8;
     buff[2] = a & 0xFF;// send address
 
@@ -101,13 +104,14 @@ float ram_read(uint16_t a){
     uint8_t out_buff[7];
     uint8_t in_buff[7];
 
-    out_buff[0] = __mul_instruction
+    // only the instructions and address matter
+    out_buff[0] = 0b00000011; // send instruction to read
     out_buff[1] = address high byte
     out_buff[2] = address low byte 
 
-    cs low\
-    spi_write_read_blocking(spi_default, out_buff, in_buff, 7);
-    cs high
+    cs_deselect(PIN_CS);
+    spi_write_read_blocking(spi_default,out_buff, in_buff,7);
+    cs_select(PIN_CS);
 
     union FloatInt num;
     num.i = 0;
