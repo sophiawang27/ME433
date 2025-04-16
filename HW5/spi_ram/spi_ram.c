@@ -58,20 +58,21 @@ int main()
     
     init_ram(); // initialize sequential operation
 
-    volatile uint16_t address = 0;
-    volatile int t = 0;
+    volatile uint16_t address = 0b0;
+    volatile float t = 0.0;
     for (int i=0; i<1000; i++){
-        t += 0.1; // incrementing time by 0.1
+        t += 0.01; // incrementing time by 0.1
         float v = 1.65*sin(2.0*M_PI*t) + 1.65;
         ram_write(address, v);
         address += 4;
     }
     
     while (true) {
-        int address = 0;
-        float voltage = ram_read(address); // read from one address
+        volatile uint16_t address_read = 0b0;
+        float voltage = ram_read(address_read); // read from one address
         writeDAC(0, voltage);// send the float to the DAC (copy in form HW4)
-        sleep_ms(1); // delay one ms
+        printf("%f", voltage);
+        sleep_ms(250); // delay one ms
         address += 4;
 
     }
@@ -82,9 +83,9 @@ void init_ram(void){
     uint8_t buff[2];
     buff[0] = 0b00000101; // change status register
     buff[1] = 0b01000000; // to sequential mode
-    cs_deselect(RAM_CS);
-    spi_write_blocking(spi_default,buff,2);
     cs_select(RAM_CS);
+    spi_write_blocking(spi_default,buff,2);
+    cs_deselect(RAM_CS);
 }
 
 // write to ram
@@ -102,9 +103,9 @@ void ram_write(uint16_t a, float v){
     buff[5] = num.i>>8; //float
     buff[6] = num.i; //float rightmost
 
-    cs_deselect(RAM_CS);
-    spi_write_blocking(spi_default,buff,7);
     cs_select(RAM_CS);
+    spi_write_blocking(spi_default,buff,7);
+    cs_deselect(RAM_CS);
 }
 
 // read from ram
@@ -117,9 +118,9 @@ float ram_read(uint16_t a){
     out_buff[1] = a >> 8;
     out_buff[2] = a & 0xFF;// send address
 
-    cs_deselect(RAM_CS);
-    spi_write_read_blocking(spi_default, out_buff, in_buff,7);
     cs_select(RAM_CS);
+    spi_write_read_blocking(spi_default, out_buff, in_buff, 7);
+    cs_deselect(RAM_CS);
 
     union FloatInt num;
     num.i = 0;
