@@ -84,7 +84,7 @@ int main()
 // initialize the ram chip with sequential mode
 void init_ram(void){
     uint8_t buff[2];
-    buff[0] = 0b00000101; // change status register
+    buff[0] = 0b00000001; // change status register
     buff[1] = 0b01000000; // to sequential mode
     cs_select(RAM_CS);
     spi_write_blocking(spi_default,buff,2);
@@ -127,7 +127,7 @@ float ram_read(uint16_t a){
 
     union FloatInt num;
     num.i = 0;
-    num.i = in_buff[3]<<24 | in_buff[4]<<16 | in_buff[5]<<8 | in_buff[6]; // bitshifting to put the input float into an int32
+    num.i = (in_buff[3]<<24) | (in_buff[4]<<16) | (in_buff[5]<<8) | (in_buff[6]); // bitshifting to put the input float into an int32
 
     return num.f;
 }
