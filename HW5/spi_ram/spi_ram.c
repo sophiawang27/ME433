@@ -71,13 +71,11 @@ int main()
     while (true) {
         float voltage = ram_read(address); // read from one address
         writeDAC(0, voltage);// send the float to the DAC (copy in form HW4)
-        printf("%f\n", voltage);
-        sleep_ms(250); // delay one ms
         address += 4;
         if (address>= 4000){
             address = 0;
         }
-
+        sleep_ms(10);
     }
 }
 
