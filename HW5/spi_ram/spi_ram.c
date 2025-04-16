@@ -123,14 +123,17 @@ float ram_read(uint16_t a){
     out_buff[0] = 0b00000011; // send instruction to read
     out_buff[1] = a >> 8;
     out_buff[2] = a & 0xFF;// send address
+    out_buff[3] = 0b0;
+    out_buff[4] = 0b0;
+    out_buff[5] = 0b0;
+    out_buff[6] = 0b0;
 
     cs_select(RAM_CS);
     spi_write_read_blocking(spi_default, out_buff, in_buff, 7);
     cs_deselect(RAM_CS);
 
     union FloatInt num;
-    num.i = 0;
-    num.i = (in_buff[0]<<24) | (in_buff[1]<<16) | (in_buff[2]<<8) | (in_buff[3]); // bitshifting to put the input float into an int32
+    num.i = (in_buff[3]<<24) | (in_buff[4]<<16) | (in_buff[5]<<8) | (in_buff[6]); // bitshifting to put the input float into an int32
     return num.f;
 }
 
