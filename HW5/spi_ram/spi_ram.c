@@ -67,9 +67,10 @@ int main()
     }
     
     while (true) {
-        float voltage = ram_read(address) // read from one address
+        float voltage = ram_read(address); // read from one address
         // send the float to the DAC (copy in form HW4)
         sleep_ms(1); // delay one ms
+        
     }
 }
 
@@ -92,10 +93,10 @@ void ram_write(uint16_t a, float v){
     union FloatInt num;
     num.f = v;
 
-    buff[3] = num.i>>24//float leftmost
-    buff[4] = //float
-    buff[5] = //float
-    buff[6] = //float rightmost
+    buff[3] = num.i>>24; //float leftmost
+    buff[4] = num.i>>16; //float
+    buff[5] = num.i>>8; //float
+    buff[6] = num.i; //float rightmost
 
     cs_deselect(RAM_CS);
     spi_write_blocking(spi_default,buff,7);
