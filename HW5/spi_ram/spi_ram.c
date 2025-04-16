@@ -46,6 +46,7 @@ int main()
     spi_init(SPI_PORT, 1000*1000);
     gpio_set_function(PIN_MISO, GPIO_FUNC_SPI);
     gpio_set_function(PIN_CS,   GPIO_FUNC_SIO);
+    gpio_set_function(RAM_CS,   GPIO_FUNC_SIO);
     gpio_set_function(PIN_SCK,  GPIO_FUNC_SPI);
     gpio_set_function(PIN_MOSI, GPIO_FUNC_SPI);
     
@@ -57,22 +58,26 @@ int main()
     // For more examples of SPI use see https://github.com/raspberrypi/pico-examples/tree/master/spi
     
     init_ram(); // initialize sequential operation
-
+    while (!stdio_usb_connected()) {
+        sleep_ms(100);
+    }
     uint16_t address = 0b0;
     float voltage = 0.0;
     float t = 0.0;
+
     for (int i=0; i<1000; i++){
         float v = 1.65*sin(2.0*M_PI*t) + 1.65;
         ram_write(address, v);
         t += 0.01; // incrementing time by 0.1
         address += 4;
     }
+
     address = 0b0;
     while (true) {
         float voltage = ram_read(address); // read from one address
         writeDAC(0, voltage);// send the float to the DAC (copy in form HW4)
         address += 4;
-        if (address>= 4000){
+        if (address> 3996){
             address = 0;
         }
         sleep_ms(10);
@@ -105,7 +110,7 @@ void ram_write(uint16_t a, float v){
     buff[6] = num.i; //float rightmost
 
     cs_select(RAM_CS);
-    spi_write_blocking(SPI_PORT,buff,7);
+    spi_write_blocking(spi_default,buff,7);
     cs_deselect(RAM_CS);
 }
 
@@ -120,13 +125,12 @@ float ram_read(uint16_t a){
     out_buff[2] = a & 0xFF;// send address
 
     cs_select(RAM_CS);
-    spi_write_read_blocking(SPI_PORT, out_buff, in_buff, 7);
+    spi_write_read_blocking(spi_default, out_buff, in_buff, 7);
     cs_deselect(RAM_CS);
 
     union FloatInt num;
     num.i = 0;
-    num.i = (in_buff[3]<<24) | (in_buff[4]<<16) | (in_buff[5]<<8) | (in_buff[6]); // bitshifting to put the input float into an int32
-
+    num.i = (in_buff[0]<<24) | (in_buff[1]<<16) | (in_buff[2]<<8) | (in_buff[3]); // bitshifting to put the input float into an int32
     return num.f;
 }
 
@@ -145,6 +149,6 @@ void writeDAC(int channel, float voltage){
     data[0] = d >> 8; // leftmost 8 bits
     data[1] = d & 0xFF;  // rightmost 8 bits
     cs_select(PIN_CS);
-    spi_write_blocking(SPI_PORT, data, len); // where data is a uint8_t array with length len
+    spi_write_blocking(spi_default, data, len); // where data is a uint8_t array with length len
     cs_deselect(PIN_CS);
 }
