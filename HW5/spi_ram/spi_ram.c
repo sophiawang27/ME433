@@ -70,8 +70,7 @@ int main()
     while (true) {
         int address = 0;
         float voltage = ram_read(address); // read from one address
-        uint16_t an_v = voltage*1023/3.3;
-        writeDAC(0, an_v);// send the float to the DAC (copy in form HW4)
+        writeDAC(0, voltage);// send the float to the DAC (copy in form HW4)
         sleep_ms(1); // delay one ms
         address += 4;
 
@@ -118,9 +117,9 @@ float ram_read(uint16_t a){
     out_buff[1] = a >> 8;
     out_buff[2] = a & 0xFF;// send address
 
-    cs_deselect(PIN_CS);
+    cs_deselect(RAM_CS);
     spi_write_read_blocking(spi_default, out_buff, in_buff,7);
-    cs_select(PIN_CS);
+    cs_select(RAM_CS);
 
     union FloatInt num;
     num.i = 0;
