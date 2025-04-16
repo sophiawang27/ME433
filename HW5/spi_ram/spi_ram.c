@@ -16,6 +16,7 @@
 void init_ram(void); // initialize the ram (sequential operation)
 void ram_write(uint16_t a, float v); // write from pico to ram
 float ram_read(uint16_t a); // read from ram to DAC
+void writeDAC(int channel, float voltage);
 
 // function to turn on and off CS
 static inline void cs_select(uint cs_pin) {
@@ -68,9 +69,9 @@ int main()
     
     while (true) {
         float voltage = ram_read(address); // read from one address
-        // send the float to the DAC (copy in form HW4)
+        writeDAC(0, voltage);// send the float to the DAC (copy in form HW4)
         sleep_ms(1); // delay one ms
-        
+
     }
 }
 
@@ -84,6 +85,7 @@ void init_ram(void){
     cs_select(RAM_CS);
 }
 
+// write to ram
 void ram_write(uint16_t a, float v){
     uint8_t buff[7];
     buff[0] = 0b00000010; // send instruction to write
@@ -103,7 +105,7 @@ void ram_write(uint16_t a, float v){
     cs_select(RAM_CS);
 }
 
-
+// read from ram
 float ram_read(uint16_t a){
     uint8_t out_buff[7];
     uint8_t in_buff[7];
@@ -114,12 +116,31 @@ float ram_read(uint16_t a){
     out_buff[2] = a & 0xFF;// send address
 
     cs_deselect(PIN_CS);
-    spi_write_read_blocking(spi_default,out_buff, in_buff,7);
+    spi_write_read_blocking(spi_default, out_buff, in_buff,7);
     cs_select(PIN_CS);
 
     union FloatInt num;
     num.i = 0;
     num.i = in_buff[3]<<24 | in_buff[4]<<16 | in_buff[5]<<8 | in_buff[6]; // bitshifting to put the input float into an int32
 
-    return num.f
+    return num.f;
+}
+
+
+void writeDAC(int channel, float voltage){
+    uint8_t data[2];
+    int len = 2;
+    // change the first four (leftmost) bits to represent channel and tie values high
+    uint16_t d = 0;
+    d = d | channel << 15;
+    d = d | 0b111 << 12;
+    // convert the float voltage to a 10-bit analog number
+    uint16_t v = (uint16_t)(voltage * 1023/ 3.3);
+    d = d | v << 2; // add this value to the data
+
+    data[0] = d >> 8; // leftmost 8 bits
+    data[1] = d & 0xFF;  // rightmost 8 bits
+    cs_select(PIN_CS);
+    spi_write_blocking(SPI_PORT, data, len); // where data is a uint8_t array with length len
+    cs_deselect(PIN_CS);
 }
