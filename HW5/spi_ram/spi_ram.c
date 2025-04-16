@@ -63,7 +63,7 @@ int main()
     float t = 0.0;
     for (int i=0; i<1000; i++){
         float v = 1.65*sin(2.0*M_PI*t) + 1.65;
-        ram_write(address, 1.0);
+        ram_write(address, v);
         t += 0.01; // incrementing time by 0.1
         address += 4;
     }
