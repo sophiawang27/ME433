@@ -85,7 +85,7 @@ void init_ram(void){
     buff[0] = 0b00000001; // change status register
     buff[1] = 0b01000000; // to sequential mode
     cs_select(RAM_CS);
-    spi_write_blocking(spi_default,buff,2);
+    spi_write_blocking(SPI_PORT,buff,2);
     cs_deselect(RAM_CS);
 }
 
@@ -105,7 +105,7 @@ void ram_write(uint16_t a, float v){
     buff[6] = num.i; //float rightmost
 
     cs_select(RAM_CS);
-    spi_write_blocking(spi_default,buff,7);
+    spi_write_blocking(SPI_PORT,buff,7);
     cs_deselect(RAM_CS);
 }
 
@@ -120,7 +120,7 @@ float ram_read(uint16_t a){
     out_buff[2] = a & 0xFF;// send address
 
     cs_select(RAM_CS);
-    spi_write_read_blocking(spi_default, out_buff, in_buff, 7);
+    spi_write_read_blocking(SPI_PORT, out_buff, in_buff, 7);
     cs_deselect(RAM_CS);
 
     union FloatInt num;
