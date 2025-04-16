@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 #include "hardware/spi.h"
+#include <math.h>
 
 // SPI Defines
 // We are going to use SPI 0, and allocate it to the following GPIO pins
@@ -36,7 +37,6 @@ union FloatInt {
     uint32_t i;
 };
 
-
 int main()
 {
     stdio_init_all();
@@ -57,10 +57,13 @@ int main()
     
     init_ram(); // initialize sequential operation
 
-
+    volatile uint16_t address = 0;
+    volatile int t = 0;
     for (int i=0; i<1000; i++){
-        calculate v = sin(t)
-        ram_write(address, v)
+        t += 0.1; // incrementing time by 0.1
+        float v = 1.65*sin(2.0*M_PI*t) + 1.65;
+        ram_write(address, v);
+        address += 4;
     }
     
     while (true) {
@@ -106,8 +109,8 @@ float ram_read(uint16_t a){
 
     // only the instructions and address matter
     out_buff[0] = 0b00000011; // send instruction to read
-    out_buff[1] = address high byte
-    out_buff[2] = address low byte 
+    out_buff[1] = a >> 8;
+    out_buff[2] = a & 0xFF;// send address
 
     cs_deselect(PIN_CS);
     spi_write_read_blocking(spi_default,out_buff, in_buff,7);
@@ -115,7 +118,7 @@ float ram_read(uint16_t a){
 
     union FloatInt num;
     num.i = 0;
-    num.i = in_buff[3]<<24 | in_buff[4]<<16 // needs more here
+    num.i = in_buff[3]<<24 | in_buff[4]<<16 | in_buff[5]<<8 | in_buff[6]; // bitshifting to put the input float into an int32
 
     return num.f
 }

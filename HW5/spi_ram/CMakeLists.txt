@@ -55,7 +55,7 @@ target_include_directories(spi_ram PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(spi_ram 
-        hardware_spi
+        hardware_spi math pico_stdlib
         )
 
 pico_add_extra_outputs(spi_ram)
