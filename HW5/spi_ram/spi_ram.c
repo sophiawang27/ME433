@@ -60,20 +60,20 @@ int main()
 
     volatile uint16_t address = 0b0;
     volatile float t = 0.0;
-    for (int i=0; i<1000; i++){
+    /**for (int i=0; i<1000; i++){
         t += 0.01; // incrementing time by 0.1
-        float v = 1.65*sin(2.0*M_PI*t) + 1.65;
-        ram_write(address, v);
-        address += 4;
-    }
+        float v = 1.65*sin(2.0*M_PI*t) + 1.65;**/
+        ram_write(address, 1.0);
+        /**address += 4;
+    }**/
     
     while (true) {
         volatile uint16_t address_read = 0b0;
         float voltage = ram_read(address_read); // read from one address
         writeDAC(0, voltage);// send the float to the DAC (copy in form HW4)
-        printf("%f", voltage);
+        printf("%f\n", voltage);
         sleep_ms(250); // delay one ms
-        address += 4;
+        //address += 4;
 
     }
 }
