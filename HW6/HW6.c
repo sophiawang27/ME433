@@ -9,7 +9,8 @@
 #define I2C_SDA 8
 #define I2C_SCL 9
 
-
+void setPin(unsigned char address, unsigned char register, unsigned char value);
+unsigned char readPin(unsigned char address, unsigned char register);
 
 int main()
 {
@@ -25,7 +26,12 @@ int main()
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
 
     while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
+        gpio_put(25,0);
+        sleep_ms(100);
+        gpio_put(25,1);
+        sleep_ms(100);
     }
 }
+
+void setPin(unsigned char address, unsigned char register, unsigned char value){}
+unsigned char readPin(unsigned char address, unsigned char register){}
