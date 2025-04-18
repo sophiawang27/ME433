@@ -32,7 +32,7 @@ int main()
         sleep_ms(100);
         gpio_put(25,1);
         sleep_ms(100);
-
+        setPin(0b01000000, 0x0A, 0b10000000);
     }
 }
 
