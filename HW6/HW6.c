@@ -8,9 +8,11 @@
 #define I2C_PORT i2c0
 #define I2C_SDA 16
 #define I2C_SCL 17
+#define ADDRESS 0x20
 
 void setPin(unsigned char address, unsigned char register, unsigned char value);
 unsigned char readPin(unsigned char address, unsigned char register);
+void i2c_setup(void);
 
 int main()
 {
@@ -19,7 +21,6 @@ int main()
     gpio_set_dir(25, GPIO_OUT); // init onboard led
     // I2C Initialisation. Using it at 400Khz.
     i2c_init(I2C_PORT, 400*1000);
-    
     gpio_set_function(I2C_SDA, GPIO_FUNC_I2C);
     gpio_set_function(I2C_SCL, GPIO_FUNC_I2C);
     gpio_pull_up(I2C_SDA);
@@ -32,17 +33,18 @@ int main()
         sleep_ms(100);
         gpio_put(25,1);
         sleep_ms(100);
-        setPin(0b01000000, 0x0A, 0b10000000);
+        setPin(ADDRESS, 0x0A, 0b10000000);
+        unsigned char button_val = readPin(ADDRESS, 0x09);
+        printf("%u", button_val);
     }
 }
 
 // turn on communication w address and gpio pins on extender
 void i2c_setup(void){
-    unsigned char dir = 0b01000000;
     unsigned char buff[2];
     buff[0] =  0x00; // sfr iodir
     buff[1] = 0b01111111; // value to turn gp0 input gp7 output
-    i2c_write_blocking(i2c_default, dir, buff, 2, false);// talk to i2c chip
+    i2c_write_blocking(I2C_PORT, ADDRESS, buff, 2, false);// talk to i2c chip
 
 }
 
@@ -51,7 +53,7 @@ void setPin(unsigned char address, unsigned char register, unsigned char value){
     unsigned char buff[2];
     buff[0] = 0x0A; // olat sfr
     buff[1] = value;
-    i2c_write_blocking(i2c_default, address, buff, 2, false);// talk to i2c chip
+    i2c_write_blocking(I2C_PORT, ADDRESS, buff, 2, false);// talk to i2c chip
     
 }
 
@@ -59,7 +61,7 @@ void setPin(unsigned char address, unsigned char register, unsigned char value){
 unsigned char readPin(unsigned char address, unsigned char register){
     unsigned char reg = 0x09;
     unsigned char buf;
-    i2c_write_blocking(i2c_default, address, &reg, 1, true);  // true to keep master control of bus
-    i2c_read_blocking(i2c_default, address, &buf, 1, false);  // false - finished with bus
-
+    i2c_write_blocking(I2C_PORT, ADDRESS, &reg, 1, true);  // true to keep master control of bus
+    i2c_read_blocking(I2C_PORT, ADDRESS, &buf, 1, false);  // false - finished with bus
+    return buf;
 }
