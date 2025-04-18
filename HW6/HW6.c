@@ -27,22 +27,15 @@ int main()
     gpio_pull_up(I2C_SCL);
     i2c_setup();
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
-    setPin(ADDRESS, 0x0A, 0b00000000);
     while (true) {
-        gpio_put(25,0);
-        sleep_ms(100);
-        gpio_put(25,1);
-        sleep_ms(100);
 
-        unsigned char button_val = readPin(ADDRESS, 0x09);
-        printf("%u", button_val);
         setPin(ADDRESS, 0x0A, 0b00000000);
-        /**while(!readPin(ADDRESS, 0x09)){
+        while(readPin(ADDRESS, 0x09)){
             ; // do nothing
         }
         setPin(ADDRESS, 0x0A, 0b10000000);
-        while(readPin(ADDRESS, 0x09)){
-        }**/
+        while(readPin(ADDRESS, 0x09) == 127){
+        }
 
     }
 }
@@ -61,7 +54,7 @@ void setPin(unsigned char address, unsigned char register, unsigned char value){
     unsigned char buff[2];
     buff[0] = 0x0A; // olat sfr
     buff[1] = value;
-    i2c_write_blocking(I2C_PORT, ADDRESS, buff, 2, false);// talk to i2c chip
+    i2c_write_blocking(I2C_PORT, address, buff, 2, false);// talk to i2c chip
     
 }
 
@@ -69,7 +62,7 @@ void setPin(unsigned char address, unsigned char register, unsigned char value){
 unsigned char readPin(unsigned char address, unsigned char register){
     unsigned char reg = 0x09;
     unsigned char buf;
-    i2c_write_blocking(I2C_PORT, ADDRESS, &reg, 1, true);  // true to keep master control of bus
-    i2c_read_blocking(I2C_PORT, ADDRESS, &buf, 1, false);  // false - finished with bus
+    i2c_write_blocking(I2C_PORT, address, &reg, 1, true);  // true to keep master control of bus
+    i2c_read_blocking(I2C_PORT, address, &buf, 1, false);  // false - finished with bus
     return buf;
 }
