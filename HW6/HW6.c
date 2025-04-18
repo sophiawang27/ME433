@@ -27,15 +27,23 @@ int main()
     gpio_pull_up(I2C_SCL);
     i2c_setup();
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
-
+    setPin(ADDRESS, 0x0A, 0b00000000);
     while (true) {
         gpio_put(25,0);
         sleep_ms(100);
         gpio_put(25,1);
         sleep_ms(100);
-        setPin(ADDRESS, 0x0A, 0b10000000);
+
         unsigned char button_val = readPin(ADDRESS, 0x09);
         printf("%u", button_val);
+        setPin(ADDRESS, 0x0A, 0b00000000);
+        /**while(!readPin(ADDRESS, 0x09)){
+            ; // do nothing
+        }
+        setPin(ADDRESS, 0x0A, 0b10000000);
+        while(readPin(ADDRESS, 0x09)){
+        }**/
+
     }
 }
 
