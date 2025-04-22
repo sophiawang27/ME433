@@ -55,7 +55,7 @@ target_include_directories(HW7 PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(HW7 
-        hardware_i2c ssd1306
+        hardware_i2c ssd1306 font
         )
 
 pico_add_extra_outputs(HW7)
