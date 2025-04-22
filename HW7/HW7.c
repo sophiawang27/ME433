@@ -13,9 +13,6 @@
 #define I2C_SDA 16
 #define I2C_SCL 17
 
-void drawMessage(int x, int y, char * m);
-void drawLetter(int x, int y, char c);
-
 int main()
 {
     stdio_init_all();
@@ -44,36 +41,20 @@ int main()
         // get the start time
         unsigned int t1 = to_us_since_boot(get_absolute_time());  
 
+        // get the adc vals and convert to voltage
+        uint16_t adc_value = adc_read();// read adc value and store in adc_values
+        float volt_value = adc_value*3.3/4095.0;// convert 12-bit number to float voltage value
+
         // clr and print the message
         ssd1306_clear();
-        sprintf(message, "i <3 u");
+        sprintf(message, "%f", volt_value);
         drawMessage(0,0, message); // keep drawing until you hit the null
         unsigned int t2 = to_us_since_boot(get_absolute_time());  
         unsigned int tdiff = t2 - t1; // process time in microseconds
-        uint64_t fps = (uint64_t)(1/(tdiff*1000000));// turn time to frames per second
-        sprintf(message, "%u", fps);
+        uint64_t fps = (uint64_t)(1/((float)(tdiff/1000000.0)));// turn time to frames per second
+        sprintf(message, "%u fps", fps);
         drawMessage(0,20,message);// print to the bottom of the display
         ssd1306_update(); // final action
-        sleep_ms(1000);
-    }
-}
-
-void drawMessage(int x, int y, char * m){
-    int i = 0;
-    while (m[i] != 0){
-        drawLetter(x + i*5, y, m[i]); // can add spacing between letters
-        i++;
-    }
-}
-
-void drawLetter(int x, int y, char c){ // c is ascii letter to draw
-    int j;
-    for (j=0; j<5; j++){
-        char col = ASCII[c-0x20][j]; // skipping non displayable characters
-        int i = 0;
-        for (i = 0; i<8; i++){
-            char bit = (col >> i)& 0b1;
-            ssd1306_drawPixel(x+j, y+i, bit);
-        }
+        sleep_ms(500);
     }
 }
