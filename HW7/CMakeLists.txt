@@ -54,9 +54,7 @@ target_include_directories(HW7 PRIVATE
 )
 
 # Add any user requested libraries
-target_link_libraries(HW7 
-
-        )
+target_link_libraries(HW7 )
 
 pico_add_extra_outputs(HW7)
 
