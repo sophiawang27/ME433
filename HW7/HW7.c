@@ -33,12 +33,15 @@ int main()
 
     while (true) {
         char message[50];
+        t = read_time
         ssd1306_clear(); // clear all bits
         sprintf(message, "hello");
         drawMessage(10, 20, message); // keep drawing until you hit the null
-
-
         ssd1306_update(); // final action
+        t2 = read_time
+        tdiff = t2 - 1 // in microseconds
+        // turn time to frames per second
+        // print to the bottom of the display
         sleep_ms(1000);
     }
 }
@@ -49,7 +52,6 @@ void drawMessage(int x, int y, char * m){
         drawLetter(x + i*5, y, m[i]); // can add spacing between letters
         i++;
     }
-
 }
 
 void drawLetter(int x, int y, char c){ // c is ascii letter to draw
