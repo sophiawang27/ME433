@@ -4,6 +4,7 @@
 #include "ssd1306.h"
 #include "font.h"
 #include "display.h"
+#include "hardware/adc.h"
 
 // I2C defines
 // This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
@@ -18,6 +19,11 @@ void drawLetter(int x, int y, char c);
 int main()
 {
     stdio_init_all();
+
+    // initialize ADC
+    adc_init(); // init the adc module
+    adc_gpio_init(26); // set ADC0 pin to be adc input instead of GPIO
+    adc_select_input(0); // select to read from ADC0
 
     // I2C Initialisation. Using it at 400Khz.
     i2c_init(I2C_PORT, 400*1000);
