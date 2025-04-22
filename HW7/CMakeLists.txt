@@ -35,7 +35,7 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(HW7 HW7.c ssd1306.c)
+add_executable(HW7 HW7.c ssd1306.c display.c)
 
 pico_set_program_name(HW7 "HW7")
 pico_set_program_version(HW7 "0.1")
@@ -46,7 +46,7 @@ pico_enable_stdio_usb(HW7 1)
 
 # Add the standard library to the build
 target_link_libraries(HW7
-        pico_stdlib)
+        pico_stdlib hardware_i2c)
 
 # Add the standard include files to the build
 target_include_directories(HW7 PRIVATE
@@ -55,7 +55,7 @@ target_include_directories(HW7 PRIVATE
 
 # Add any user requested libraries
 target_link_libraries(HW7 
-        hardware_i2c ssd1306 font
+
         )
 
 pico_add_extra_outputs(HW7)
