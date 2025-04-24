@@ -93,13 +93,6 @@ int main() {
 
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
     init_pwm();
-    uint16_t pwmArray[360];
-    for(int duty = 0; duty<180; duty++){
-        pwmArray[duty] = duty*12.5/360;
-    }
-    for(int duty = 0; duty<180; duty++){
-        pwmArray[360-duty] = duty*12.5/360;
-    }
 
     while (1) {
         int j = 50;
@@ -128,12 +121,20 @@ int main() {
             if((l+1)>=360){
                 l = 0;
             }
+            int update = i;
             if (i<180){
-                set_pwm((i/180)*13, 50000);
+                if(i<20){
+                    i = 20;
+                }
+                set_pwm((i/180.0)*12.0, 50000);
             }
-            else {
-                set_pwm(((180-i)/180)*13, 50000);
+            else{
+                if (i>=340){
+                    i = 340;
+                }
+                set_pwm(((360.0-i)/180.0)*12.0, 50000);
             }
+            i = update;
     }
 
     // This will free resources and unload our program
