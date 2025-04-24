@@ -91,7 +91,7 @@ int main() {
     hard_assert(success);
 
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
-
+    init_pwm();
 
     int t = 0;
     while (1) {
