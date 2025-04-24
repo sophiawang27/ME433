@@ -73,7 +73,7 @@ typedef struct {
 
 wsColor HSBtoRGB(float hue, float sat, float brightness);
 void init_pwm(void);
-void set_pwm(float duty_cycle, uint16_t wrap);
+void set_angle(float angle, uint16_t wrap);
 
 int main() {
     //set_sys_clock_48();
@@ -93,6 +93,21 @@ int main() {
 
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
     init_pwm();
+    float pwmArray[360];
+    for (int ind = 0; ind<360; ind++){
+        if (ind<180){
+            if(ind<20){
+                ind = 20;
+            }
+            pwmArray[ind] = ((ind/180.0)*12.0, 50000);
+        }
+        else{
+            if (ind>=340){
+                ind = 340;
+            }
+            pwmArray[ind] = (((360.0-ind)/180.0)*12.0, 50000);
+        }
+    }
 
     while (1) {
         int j = 50;
@@ -121,20 +136,15 @@ int main() {
             if((l+1)>=360){
                 l = 0;
             }
-            int update = i;
+            //set_pwm(pwmArray[i], 50000);
+            //int update = i;
             if (i<180){
-                if(i<20){
-                    i = 20;
-                }
-                set_pwm((i/180.0)*12.0, 50000);
+                set_angle(i, 50000);
             }
             else{
-                if (i>=340){
-                    i = 340;
-                }
-                set_pwm(((360.0-i)/180.0)*12.0, 50000);
+                set_angle((360.0-i), 50000);
             }
-            i = update;
+            //i = update;
     }
 
     // This will free resources and unload our program
@@ -156,7 +166,8 @@ void init_pwm(void){
 
 }
 
-void set_pwm(float duty_cycle, uint16_t wrap){
+void set_angle(float angle, uint16_t wrap){
+    float duty_cycle = (angle*10.0/180.0)+3.0;
     pwm_set_gpio_level(PWMPIN, (wrap*(duty_cycle)/100)); // set the duty cycle to input
 
 }
