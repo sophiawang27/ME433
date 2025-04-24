@@ -41,16 +41,8 @@
 #error Attempting to use a pin>=32 on a platform that does not support it
 #endif
 
-#define LEDPin 25 // the built in LED on the Pico
-gpio_set_function(LEDPin, GPIO_FUNC_PWM); // Set the LED Pin to be PWM
-uint slice_num = pwm_gpio_to_slice_num(LEDPin); // Get PWM slice number
-float div = 3; // must be between 1-255
-pwm_set_clkdiv(slice_num, div); // divider
-uint16_t wrap = 50000; // when to rollover, must be less than 65535
-pwm_set_wrap(slice_num, wrap);
-pwm_set_enabled(slice_num, true); // turn on the PWM
+#define PWMPIN 15 // the built in LED on the Pico
 
-pwm_set_gpio_level(LEDPin, wrap / 2); // set the duty cycle to 50%
 
 static inline void put_pixel(PIO pio, uint sm, uint32_t pixel_grb) {
     pio_sm_put_blocking(pio, sm, pixel_grb << 8u);
@@ -80,6 +72,7 @@ typedef struct {
 } wsColor; 
 
 wsColor HSBtoRGB(float hue, float sat, float brightness);
+void init_pwm(void);
 
 int main() {
     //set_sys_clock_48();
@@ -98,6 +91,7 @@ int main() {
     hard_assert(success);
 
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
+
 
     int t = 0;
     while (1) {
@@ -127,6 +121,15 @@ int main() {
             if((l+1)>360){
                 l = 0;
             }
+            gpio_set_function(PWMPIN, GPIO_FUNC_PWM); // Set the LED Pin to be PWM
+            uint slice_num = pwm_gpio_to_slice_num(PWMPIN); // Get PWM slice number
+            float div = 3; // must be between 1-255
+            pwm_set_clkdiv(slice_num, div); // divider
+            uint16_t wrap = 50000; // when to rollover, must be less than 65535
+            pwm_set_wrap(slice_num, wrap);
+            pwm_set_enabled(slice_num, true); // turn on the PWM
+
+            pwm_set_gpio_level(PWMPIN, wrap / 2); // set the duty cycle to 50%
         }
     }
 
@@ -134,7 +137,19 @@ int main() {
     pio_remove_program_and_unclaim_sm(&ws2812_program, pio, sm, offset);
 }
 
+// initialize pwm to 50Hz
+void init_pwm(void){
+    gpio_set_function(PWMPIN, GPIO_FUNC_PWM); // Set GP15 to pwm pin
+    uint slice_num = pwm_gpio_to_slice_num(PWMPIN); // Get PWM slice number
+    float div = 60; // must be between 1-255
+    pwm_set_clkdiv(slice_num, div); // divider
+    uint16_t wrap = 50000; // when to rollover, must be less than 65535
+    pwm_set_wrap(slice_num, wrap);
+    pwm_set_enabled(slice_num, true); // turn on the PWM
 
+    pwm_set_gpio_level(PWMPIN, 0); // set the duty cycle to 0
+
+}
 
 // adapted from https://forum.arduino.cc/index.php?topic=8498.0
 // hue is a number from 0 to 360 that describes a color on the color wheel
