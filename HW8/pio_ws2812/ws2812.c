@@ -73,6 +73,7 @@ typedef struct {
 
 wsColor HSBtoRGB(float hue, float sat, float brightness);
 void init_pwm(void);
+void set_pwm(float duty_cycle, uint16_t wrap);
 
 int main() {
     //set_sys_clock_48();
@@ -92,15 +93,21 @@ int main() {
 
     ws2812_program_init(pio, sm, offset, WS2812_PIN, 800000, IS_RGBW);
     init_pwm();
+    uint16_t pwmArray[360];
+    for(int duty = 0; duty<180; duty++){
+        pwmArray[duty] = duty*12.5/360;
+    }
+    for(int duty = 0; duty<180; duty++){
+        pwmArray[360-duty] = duty*12.5/360;
+    }
 
-    int t = 0;
     while (1) {
         int j = 50;
         int k = 100;
         int l = 150;
-        for (int i=0; i<=360; i++){
-            wsColor color = HSBtoRGB(i, 1.0, 0.1);
-            put_pixel(pio, sm, urgb_u32(color.r, color.g, color.b));
+        for (int i=0; i<360; i++){
+            wsColor led1 = HSBtoRGB(i, 1.0, 0.1);
+            put_pixel(pio, sm, urgb_u32(led1.r, led1.g, led1.b));
             wsColor led2 = HSBtoRGB(j, 1.0, 0.1);
             put_pixel(pio, sm, urgb_u32(led2.r, led2.g, led2.b));
             wsColor led3 = HSBtoRGB(k, 1.0, 0.1);
@@ -112,29 +119,26 @@ int main() {
             j++;
             k++;
             l++;
-            if((j+1) > 360){
+            if((j+1) >= 360){
                 j = 0;
             }
-            if((k+1)>360){
+            if((k+1)>=360){
                 k = 0;
             }
-            if((l+1)>360){
+            if((l+1)>=360){
                 l = 0;
             }
-            gpio_set_function(PWMPIN, GPIO_FUNC_PWM); // Set the LED Pin to be PWM
-            uint slice_num = pwm_gpio_to_slice_num(PWMPIN); // Get PWM slice number
-            float div = 3; // must be between 1-255
-            pwm_set_clkdiv(slice_num, div); // divider
-            uint16_t wrap = 50000; // when to rollover, must be less than 65535
-            pwm_set_wrap(slice_num, wrap);
-            pwm_set_enabled(slice_num, true); // turn on the PWM
-
-            pwm_set_gpio_level(PWMPIN, wrap / 2); // set the duty cycle to 50%
-        }
+            if (i<180){
+                set_pwm((i/180)*13, 50000);
+            }
+            else {
+                set_pwm(((180-i)/180)*13, 50000);
+            }
     }
 
     // This will free resources and unload our program
     pio_remove_program_and_unclaim_sm(&ws2812_program, pio, sm, offset);
+    }
 }
 
 // initialize pwm to 50Hz
@@ -148,6 +152,11 @@ void init_pwm(void){
     pwm_set_enabled(slice_num, true); // turn on the PWM
 
     pwm_set_gpio_level(PWMPIN, 0); // set the duty cycle to 0
+
+}
+
+void set_pwm(float duty_cycle, uint16_t wrap){
+    pwm_set_gpio_level(PWMPIN, (wrap*(duty_cycle)/100)); // set the duty cycle to input
 
 }
 
