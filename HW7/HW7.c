@@ -49,6 +49,7 @@ int main()
         ssd1306_clear();
         sprintf(message, "%f", volt_value);
         drawMessage(0,0, message); // keep drawing until you hit the null
+        ssd1306_update(); // final action
         unsigned int t2 = to_us_since_boot(get_absolute_time());  
         unsigned int tdiff = t2 - t1; // process time in microseconds
         uint64_t fps = (uint64_t)(1/((float)(tdiff/1000000.0)));// turn time to frames per second
