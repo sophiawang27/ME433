@@ -30,8 +30,8 @@ def plotdata(t, data1):
 
 def fft(t, d):
     dt = 1.0/10000.0 # 10kHz
-
-    Fs = 10000 # sample rate
+# sample rate = number of data points / total time of samples
+    Fs = len(d)/t[-1] # sample rate
     Ts = 1.0/Fs; # sampling interval
     ts = np.arange(0,t[-1],Ts) # time vector
     y = d # the data to make the fft from
