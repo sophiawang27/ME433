@@ -59,6 +59,7 @@ def maf(mafnum, t, d):
     for i in range(mafnum, len(d)):
         avg = (sum(d[i-mafnum:i]))/mafnum
         mafTA.append(avg)
+        
     return t[mafnum:], mafTA
 
 
@@ -79,12 +80,12 @@ def fir():
 
 tA, dataA = opencsv('sigA.csv')
 plotdata(tA, dataA)
-tB, dataB = opencsv('sigB.csv')
-plotdata(tB, dataB)
-tC, dataC = opencsv('sigC.csv')
-plotdata(tC, dataC)
-tD, dataD = opencsv('sigD.csv')
-plotdata(tD, dataD)
+# tB, dataB = opencsv('sigB.csv')
+# plotdata(tB, dataB)
+# tC, dataC = opencsv('sigC.csv')
+# plotdata(tC, dataC)
+# tD, dataD = opencsv('sigD.csv')
+# plotdata(tD, dataD)
 
 t, mafdata = maf(10, tA, dataA)
 plotdata(t, mafdata)
