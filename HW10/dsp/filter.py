@@ -61,7 +61,7 @@ def fft(t, d, filtered=None, A=None, B=None):
         ax1.legend('Unfiltered Data', 'Filtered Data')
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Amplitude')
-    #ax1.set_title('Unfiltered and Filtered Signal D averaging 50 data points')
+    ax1.set_title('Unfiltered and Filtered Signal D with Low Pass Sinc, 10Hz Cutoff, 39 Weights, bandwidth 48')
     # if (A != None):
         #ax1.set_title('Unfiltered and Filtered Signal D (A=%f, B=%f)' % (A, B))
     ax2.loglog(frq,abs(Y),'b') # plotting the fft
@@ -74,6 +74,7 @@ def fft(t, d, filtered=None, A=None, B=None):
     # if (A != None):
         #ax2.set_title('FFT of Signal D (A=%f, B=%f)' % (A, B))
     #ax2.set_title('FFT of Signal D averaging 50 data points')
+    ax2.set_title('FFT of Signal D')
     plt.show()
     return Fs
 
@@ -105,36 +106,52 @@ def iir(t, d):
         oldavg = avg
     return t, iirA
 
-#the sampling rate (A) is  10000.20000400008, cutoff 30, bandwidth 2000
-#the sampling rate (B) is  3300.2000121219467
-#the sampling rate (C) is  2500.1250062503127
-#the sampling rate (D) is  400.0833506980621
+#the sampling rate (A) is  10000.20000400008, cutoff 100, bandwidth 2000
+#the sampling rate (B) is  3300.2000121219467, cutoff 33, bandwidth 400
+#the sampling rate (C) is  2500.1250062503127, cutoff 25, bandwidth 300
+#the sampling rate (D) is  400.0833506980621, cutoff 10, bandwidth 48
 def fir(t, d):
     #coeffs
     h = [
-    -0.000000000000000001,
-    0.000770977406202302,
-    0.003370877384644346,
-    0.008489177296694770,
-    0.016888946309278233,
-    0.028986974865348694,
-    0.044472107928130784,
-    0.062110397569825219,
-    0.079830201215864635,
-    0.095090212361773480,
-    0.105438514610263726,
-    0.109103226103947321,
-    0.105438514610263726,
-    0.095090212361773493,
-    0.079830201215864635,
-    0.062110397569825268,
-    0.044472107928130791,
-    0.028986974865348712,
-    0.016888946309278247,
-    0.008489177296694786,
-    0.003370877384644348,
-    0.000770977406202300,
-    -0.000000000000000001,
+    0.000000000000000000,
+    0.000019658567897599,
+    0.000125812352847421,
+    0.000406645937045143,
+    0.000979108648486075,
+    0.001990768167858861,
+    0.003613182590113233,
+    0.006025493952257190,
+    0.009389095003326116,
+    0.013816464247975026,
+    0.019339119053739771,
+    0.025880670347927980,
+    0.033240887006952040,
+    0.041095417019080982,
+    0.049013526889280339,
+    0.056493286609061222,
+    0.063010568696821173,
+    0.068075618602019869,
+    0.071289298924763003,
+    0.072390754765093657,
+    0.071289298924763003,
+    0.068075618602019869,
+    0.063010568696821201,
+    0.056493286609061243,
+    0.049013526889280346,
+    0.041095417019080982,
+    0.033240887006952026,
+    0.025880670347927990,
+    0.019339119053739782,
+    0.013816464247975026,
+    0.009389095003326124,
+    0.006025493952257201,
+    0.003613182590113236,
+    0.001990768167858860,
+    0.000979108648486073,
+    0.000406645937045144,
+    0.000125812352847421,
+    0.000019658567897598,
+    0.000000000000000000,
 ]
     firA = []
     pts = len(h)
@@ -146,7 +163,7 @@ def fir(t, d):
             vals = []
             for j in range(len(h)):
                 vals.append(h[j]*d[i-j])
-            avg = sum(vals[i-pts:i])
+            avg = sum(vals)
             firA.append(avg)
     return t, firA
 
@@ -188,4 +205,10 @@ t, iirdata = iir(tD, dataD)
 
 #fir
 t, firdata = fir(tA, dataA)
-fft(tA, dataA, firdata)
+#fft(tA, dataA, firdata)
+t, firdata = fir(tB, dataB)
+#fft(tB, dataB, firdata)
+t, firdata = fir(tC, dataC)
+#fft(tC, dataC, firdata)
+t, firdata = fir(tD, dataD)
+fft(tD, dataD, firdata)
