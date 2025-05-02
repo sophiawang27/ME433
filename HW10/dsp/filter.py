@@ -117,11 +117,11 @@ tD, dataD = opencsv('sigD.csv')
 t, mafdata = maf(100, tA, dataA)
 #fft(tA, dataA, mafdata)
 t, mafdata = maf(50, tB, dataB)
-fft(tB, dataB, mafdata)
+#fft(tB, dataB, mafdata)
 t, mafdata = maf(100, tA, dataC)
 #fft(tC, dataC, mafdata)
 t, mafdata = maf(50, tD, dataD)
-fft(tD, dataD, mafdata)
+#fft(tD, dataD, mafdata)
 
 
 # iir
