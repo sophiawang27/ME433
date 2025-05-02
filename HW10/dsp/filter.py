@@ -30,6 +30,7 @@ def plotdata(t, data1):
 
 def fft(t, d, filtered=None):
     dt = 1.0/10000.0 # 10kHz
+    data_pts = (str)(len(d))
 # sample rate = number of data points / total time of samples
     Fs = len(d)/t[-1] # sample rate
     Ts = 1.0/Fs; # sampling interval
@@ -60,6 +61,7 @@ def fft(t, d, filtered=None):
         ax1.legend('Unfiltered Data', 'Filtered Data')
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Amplitude')
+    ax1.set_title('Unfiltered and Filtered Signal D averaging 50 data points')
     ax2.loglog(frq,abs(Y),'b') # plotting the fft
     ax2.legend('Unfiltered Data')
     if (filtered != None):
@@ -67,6 +69,7 @@ def fft(t, d, filtered=None):
         ax2.legend('Unfiltered Data', 'Filtered Data')
     ax2.set_xlabel('Freq (Hz)')
     ax2.set_ylabel('|Y(freq)|')
+    ax2.set_title('FFT of Signal D averaging 50 data points')
     plt.show()
     return Fs
 
