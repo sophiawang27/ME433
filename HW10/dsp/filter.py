@@ -62,8 +62,8 @@ def fft(t, d, filtered=None, A=None, B=None):
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Amplitude')
     #ax1.set_title('Unfiltered and Filtered Signal D averaging 50 data points')
-    if (A != None):
-        ax1.set_title('Unfiltered and Filtered Signal D (A=%f, B=%f)' % (A, B))
+    # if (A != None):
+        #ax1.set_title('Unfiltered and Filtered Signal D (A=%f, B=%f)' % (A, B))
     ax2.loglog(frq,abs(Y),'b') # plotting the fft
     ax2.legend('Unfiltered Data')
     if (filtered != None):
@@ -71,8 +71,8 @@ def fft(t, d, filtered=None, A=None, B=None):
         ax2.legend('Unfiltered Data', 'Filtered Data')
     ax2.set_xlabel('Freq (Hz)')
     ax2.set_ylabel('|Y(freq)|')
-    if (A != None):
-        ax2.set_title('FFT of Signal D (A=%f, B=%f)' % (A, B))
+    # if (A != None):
+        #ax2.set_title('FFT of Signal D (A=%f, B=%f)' % (A, B))
     #ax2.set_title('FFT of Signal D averaging 50 data points')
     plt.show()
     return Fs
