@@ -28,7 +28,7 @@ def plotdata(t, data1):
     plt.title('Signal vs Time')
     plt.show()
 
-def fft(t, d, filtered=None):
+def fft(t, d, filtered=None, A=None, B=None):
     dt = 1.0/10000.0 # 10kHz
     data_pts = (str)(len(d))
 # sample rate = number of data points / total time of samples
@@ -61,7 +61,9 @@ def fft(t, d, filtered=None):
         ax1.legend('Unfiltered Data', 'Filtered Data')
     ax1.set_xlabel('Time')
     ax1.set_ylabel('Amplitude')
-    ax1.set_title('Unfiltered and Filtered Signal D averaging 50 data points')
+    #ax1.set_title('Unfiltered and Filtered Signal D averaging 50 data points')
+    if (A != None):
+        ax1.set_title('Unfiltered and Filtered Signal D (A=%f, B=%f)' % (A, B))
     ax2.loglog(frq,abs(Y),'b') # plotting the fft
     ax2.legend('Unfiltered Data')
     if (filtered != None):
@@ -69,7 +71,9 @@ def fft(t, d, filtered=None):
         ax2.legend('Unfiltered Data', 'Filtered Data')
     ax2.set_xlabel('Freq (Hz)')
     ax2.set_ylabel('|Y(freq)|')
-    ax2.set_title('FFT of Signal D averaging 50 data points')
+    if (A != None):
+        ax2.set_title('FFT of Signal D (A=%f, B=%f)' % (A, B))
+    #ax2.set_title('FFT of Signal D averaging 50 data points')
     plt.show()
     return Fs
 
@@ -87,12 +91,16 @@ def maf(mafnum, t, d):
             mafA.append(avg)
     return t, mafA
 
-
+# Write a loop that adds a value into the average with the two weights A and B, 
+# so that new_average[i] = A * new_average[i-1] + B * signal[i]. 
+# Note that A+B=1, otherwise the signal will get bigger with time (A+B>1) or go to 0 (A+B<1). 
 def iir(t, d):
+    A = 0.95
+    B = 0.05
     iirA = []
     oldavg = 0 # previous average 
     for i in range(len(d)): # starts immediately at 0
-        avg = 0.5*sum(d[i] + oldavg) # new average
+        avg = A*oldavg + B*d[i]
         iirA.append(avg) #append to iirA
         oldavg = avg
     return t, iirA
@@ -126,9 +134,14 @@ t, mafdata = maf(100, tA, dataC)
 t, mafdata = maf(50, tD, dataD)
 #fft(tD, dataD, mafdata)
 
-
 # iir
-
-
+t, iirdata = iir(tA, dataA)
+#fft(tA, dataA, iirdata, 0.99, 0.01)
+t, iirdata = iir(tB, dataB)
+#fft(tB, dataB, iirdata, 0.99, 0.01)
+t, iirdata = iir(tC, dataC)
+#fft(tC, dataC, iirdata, 0.9, 0.1)
+t, iirdata = iir(tD, dataD)
+#fft(tD, dataD, iirdata, 0.95, 0.05)
 
 #fir
