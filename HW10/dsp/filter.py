@@ -105,10 +105,52 @@ def iir(t, d):
         oldavg = avg
     return t, iirA
 
+#the sampling rate (A) is  10000.20000400008, cutoff 30, bandwidth 2000
+#the sampling rate (B) is  3300.2000121219467
+#the sampling rate (C) is  2500.1250062503127
+#the sampling rate (D) is  400.0833506980621
+def fir(t, d):
+    #coeffs
+    h = [
+    -0.000000000000000001,
+    0.000770977406202302,
+    0.003370877384644346,
+    0.008489177296694770,
+    0.016888946309278233,
+    0.028986974865348694,
+    0.044472107928130784,
+    0.062110397569825219,
+    0.079830201215864635,
+    0.095090212361773480,
+    0.105438514610263726,
+    0.109103226103947321,
+    0.105438514610263726,
+    0.095090212361773493,
+    0.079830201215864635,
+    0.062110397569825268,
+    0.044472107928130791,
+    0.028986974865348712,
+    0.016888946309278247,
+    0.008489177296694786,
+    0.003370877384644348,
+    0.000770977406202300,
+    -0.000000000000000001,
+]
+    firA = []
+    pts = len(h)
+    avg = 0
+    for i in range(len(d)):
+        if (i<pts):
+            firA.append(0)
+        else:
+            vals = []
+            for j in range(len(h)):
+                vals.append(h[j]*d[i-j])
+            avg = sum(vals[i-pts:i])
+            firA.append(avg)
+    return t, firA
 
 
-def fir():
-    print("hi")# need floating point coefficients
 
 # simple plotting of fft
 tA, dataA = opencsv('sigA.csv')
@@ -145,3 +187,5 @@ t, iirdata = iir(tD, dataD)
 #fft(tD, dataD, iirdata, 0.95, 0.05)
 
 #fir
+t, firdata = fir(tA, dataA)
+fft(tA, dataA, firdata)
