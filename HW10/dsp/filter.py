@@ -51,6 +51,7 @@ def fft(t, d):
     ax2.set_xlabel('Freq (Hz)')
     ax2.set_ylabel('|Y(freq)|')
     plt.show()
+    return Fs
 
 def maf(mafnum, t, d):
     mafA = []
@@ -79,7 +80,18 @@ def fir():
 
 
 tA, dataA = opencsv('sigA.csv')
-plotdata(tA, dataA)
+samp_rate = fft(tA, dataA)
+print("the sampling rate is ", samp_rate)
+tB, dataB = opencsv('sigB.csv')
+samp_rate = fft(tB, dataB)
+print("the sampling rate is ", samp_rate)
+tC, dataC = opencsv('sigC.csv')
+samp_rate = fft(tC, dataC)
+print("the sampling rate is ", samp_rate)
+tD, dataD = opencsv('sigD.csv')
+samp_rate = fft(tD, dataD)
+print("the sampling rate is ", samp_rate)
+#plotdata(tA, dataA)
 # tB, dataB = opencsv('sigB.csv')
 # plotdata(tB, dataB)
 # tC, dataC = opencsv('sigC.csv')
@@ -87,5 +99,4 @@ plotdata(tA, dataA)
 # tD, dataD = opencsv('sigD.csv')
 # plotdata(tD, dataD)
 
-t, mafdata = maf(10, tA, dataA)
-plotdata(t, mafdata)
+# t, mafdata = maf(10, tA, dataA)
