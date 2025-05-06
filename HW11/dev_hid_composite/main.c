@@ -29,8 +29,16 @@
 
 #include "bsp/board_api.h"
 #include "tusb.h"
+#include "hardware/gpio.h"
 
 #include "usb_descriptors.h"
+
+#define RBUTTON 18
+#define LBUTTON 12
+#define UPBUTTON 11
+#define DOWNBUTTON 13
+#define MODEBUTTON 14
+#define MODELED 15
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
@@ -48,6 +56,7 @@ enum  {
 };
 
 static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
+volatile int mode = 1;
 
 void led_blinking_task(void);
 void hid_task(void);
@@ -56,6 +65,24 @@ void hid_task(void);
 int main(void)
 {
   board_init();
+  gpio_init(MODELED); // led
+  gpio_set_dir(MODELED, GPIO_OUT);
+  gpio_init(RBUTTON); // button
+  gpio_set_dir(RBUTTON, GPIO_IN);
+  gpio_init(LBUTTON); // button
+  gpio_set_dir(LBUTTON, GPIO_IN);
+  gpio_init(UPBUTTON); // button
+  gpio_set_dir(UPBUTTON, GPIO_IN);
+  gpio_init(DOWNBUTTON); // button
+  gpio_set_dir(DOWNBUTTON, GPIO_IN);
+  gpio_init(MODEBUTTON); // button
+  gpio_set_dir(MODEBUTTON, GPIO_IN);
+  gpio_pull_up(RBUTTON); // after initializing the pin as input
+  gpio_pull_up(LBUTTON);
+  gpio_pull_up(UPBUTTON);
+  gpio_pull_up(DOWNBUTTON);
+  gpio_pull_up(MODEBUTTON);
+  gpio_put(MODELED, 1);
 
   // init device stack on configured roothub port
   tud_init(BOARD_TUD_RHPORT);
@@ -67,9 +94,11 @@ int main(void)
   while (1)
   {
     tud_task(); // tinyusb device task
-    led_blinking_task();
+    //led_blinking_task();
 
     hid_task();
+    printf("%d", mode);
+    sleep_ms(100);
   }
 }
 
@@ -138,10 +167,34 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
 
     case REPORT_ID_MOUSE:
     {
-      int8_t const delta = 5;
+      int8_t const delta = 5; // moving down and right
+      while (!mode){
+      if (!gpio_get(RBUTTON)){
 
-      // no button, right + down, no scroll, no pan
-      tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, delta, delta, 0, 0);
+      }
+      if (!gpio_get(LBUTTON)){
+
+      }
+      if (!gpio_get(UPBUTTON)){
+
+      }
+      if (!gpio_get(DOWNBUTTON)){
+
+      }
+      if (!gpio_get(MODEBUTTON)){
+        gpio_put(MODELED, 1);
+        mode = 1;
+      }
+    }
+    while(mode){
+
+      if (!gpio_get(MODEBUTTON)){
+        gpio_put(MODELED, 0);
+        mode = 0;
+      }
+    }
+
+
     }
     break;
 
@@ -198,6 +251,7 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
   }
 }
 
+
 // Every 10ms, we will sent 1 report for each HID profile (keyboard, mouse etc ..)
 // tud_hid_report_complete_cb() is used to send the next report after previous one is complete
 void hid_task(void)
@@ -219,8 +273,7 @@ void hid_task(void)
     tud_remote_wakeup();
   }else
   {
-    // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
-    send_hid_report(REPORT_ID_KEYBOARD, btn);
+    send_hid_report(REPORT_ID_MOUSE, btn); // was REPORT_ID_KEYBOARD
   }
 }
 
