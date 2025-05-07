@@ -97,8 +97,6 @@ int main(void)
     //led_blinking_task();
 
     hid_task();
-    printf("%d", mode);
-    sleep_ms(100);
   }
 }
 
@@ -168,7 +166,7 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
     case REPORT_ID_MOUSE:
     {
       int8_t const delta = 5; // moving down and right
-      while (!mode){
+      if(!mode){
       if (!gpio_get(RBUTTON)){
 
       }
@@ -188,7 +186,7 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
       sleep_ms(100);
     }
     while(mode){
-
+      
       if (!gpio_get(MODEBUTTON)){
         gpio_put(MODELED, 0);
         mode = 0;
