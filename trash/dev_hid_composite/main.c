@@ -29,17 +29,8 @@
 
 #include "bsp/board_api.h"
 #include "tusb.h"
-#include "hardware/gpio.h"
 
 #include "usb_descriptors.h"
-#include "math.h"
-
-#define RBUTTON 18
-#define LBUTTON 12
-#define UPBUTTON 11
-#define DOWNBUTTON 13
-#define MODEBUTTON 14
-#define MODELED 15
 
 //--------------------------------------------------------------------+
 // MACRO CONSTANT TYPEDEF PROTYPES
@@ -57,9 +48,6 @@ enum  {
 };
 
 static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
-volatile int mode = 0;
-volatile int8_t speeds[4];
-
 
 void led_blinking_task(void);
 void hid_task(void);
@@ -68,24 +56,6 @@ void hid_task(void);
 int main(void)
 {
   board_init();
-  gpio_init(MODELED); // led
-  gpio_set_dir(MODELED, GPIO_OUT);
-  gpio_init(RBUTTON); // button
-  gpio_set_dir(RBUTTON, GPIO_IN);
-  gpio_init(LBUTTON); // button
-  gpio_set_dir(LBUTTON, GPIO_IN);
-  gpio_init(UPBUTTON); // button
-  gpio_set_dir(UPBUTTON, GPIO_IN);
-  gpio_init(DOWNBUTTON); // button
-  gpio_set_dir(DOWNBUTTON, GPIO_IN);
-  gpio_init(MODEBUTTON); // button
-  gpio_set_dir(MODEBUTTON, GPIO_IN);
-  gpio_pull_up(RBUTTON); // after initializing the pin as input
-  gpio_pull_up(LBUTTON);
-  gpio_pull_up(UPBUTTON);
-  gpio_pull_up(DOWNBUTTON);
-  gpio_pull_up(MODEBUTTON);
-  gpio_put(MODELED, 1);
 
   // init device stack on configured roothub port
   tud_init(BOARD_TUD_RHPORT);
@@ -93,13 +63,11 @@ int main(void)
   if (board_init_after_tusb) {
     board_init_after_tusb();
   }
-  for (int j=0; j<4; j++){
-    speeds[j] = (j+1)*5;
-  }
+
   while (1)
   {
     tud_task(); // tinyusb device task
-    //led_blinking_task();
+    led_blinking_task();
 
     hid_task();
   }
@@ -144,12 +112,6 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
 {
   // skip if hid is not ready yet
   if ( !tud_hid_ready() ) return;
-  int8_t dx = 0;
-  int8_t dy = 0;
-  int speed_up = 1;
-  int speed_down = 1;
-  int speed_l = 1;
-  int speed_r = 1;
 
   switch(report_id)
   {
@@ -176,61 +138,10 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
 
     case REPORT_ID_MOUSE:
     {
-      if(!mode){
-        if ((!gpio_get(UPBUTTON)) && (gpio_get(DOWNBUTTON))){
-          speed_up -=5;
-          speed_down = 0;
-          dy = speed_up;
-        }
-        else if ((gpio_get(UPBUTTON)) && (!gpio_get(DOWNBUTTON))){
-          speed_down += 5;
-          speed_up = 0;
-          dy = speed_down;
-        }
-        else if(!gpio_get(UPBUTTON) && (!gpio_get(DOWNBUTTON))){
-          dy = 0;
-          speed_up = 0;
-          speed_down = 0;
-        }
-        
-        if ((!gpio_get(LBUTTON)) && (gpio_get(RBUTTON))){
-          speed_l -=5;
-          speed_r = 0;
-          dx = speed_l;
-        }
-        else if ((gpio_get(LBUTTON))&& (!gpio_get(RBUTTON))){
-          speed_l = 0;
-          speed_r +=5;
-          dx = speed_r;
-        }
-        else if ((!gpio_get(LBUTTON)) && (!gpio_get(RBUTTON))){
-          dx = 0;
-          speed_l = 0;
-          speed_r = 0;
-        }
+      int8_t const delta = 5;
 
-        else if (!gpio_get(MODEBUTTON)){
-          dx = 0;
-          dy = 0;
-          gpio_put(MODELED, 0);
-          mode = 1;
-        }
-        tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, dx, dy, 0,0);
-        sleep_ms(100);
-      }
-      if(mode){ // remote working mode
-        int i = 0;
-        int8_t x_mov = 5*cos(i); // moving down and right
-        int8_t y_mov = 5*sin(i);
-        tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x_mov, y_mov, 0, 0);
-        if (!gpio_get(MODEBUTTON)){
-          gpio_put(MODELED, 1);
-          mode = 0;
-        }
-        sleep_ms(100);
-      }
-
-
+      // no button, right + down, no scroll, no pan
+      tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, delta, delta, 0, 0);
     }
     break;
 
@@ -287,7 +198,6 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
   }
 }
 
-
 // Every 10ms, we will sent 1 report for each HID profile (keyboard, mouse etc ..)
 // tud_hid_report_complete_cb() is used to send the next report after previous one is complete
 void hid_task(void)
@@ -309,7 +219,8 @@ void hid_task(void)
     tud_remote_wakeup();
   }else
   {
-    send_hid_report(REPORT_ID_MOUSE, btn); // was REPORT_ID_KEYBOARD
+    // Send the 1st of report chain, the rest will be sent by tud_hid_report_complete_cb()
+    send_hid_report(REPORT_ID_KEYBOARD, btn);
   }
 }
 
