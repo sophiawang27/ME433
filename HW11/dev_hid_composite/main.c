@@ -185,6 +185,7 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
         gpio_put(MODELED, 1);
         mode = 1;
       }
+      sleep_ms(100);
     }
     while(mode){
 
@@ -192,6 +193,7 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
         gpio_put(MODELED, 0);
         mode = 0;
       }
+      sleep_ms(100);
     }
 
 
