@@ -58,7 +58,12 @@ enum  {
 
 static uint32_t blink_interval_ms = BLINK_NOT_MOUNTED;
 volatile int mode = 0;
-volatile int8_t speeds[4];
+volatile float circle[360];
+volatile int8_t speed_up = 1;
+volatile int8_t speed_down = 1;
+volatile int8_t speed_l = 1;
+volatile int8_t speed_r = 1;
+volatile int i = 0;
 
 
 void led_blinking_task(void);
@@ -93,8 +98,8 @@ int main(void)
   if (board_init_after_tusb) {
     board_init_after_tusb();
   }
-  for (int j=0; j<4; j++){
-    speeds[j] = (j+1)*5;
+  for (int j=0; j<360; j++){
+    circle[j] = 5.0*j*M_PI/180.0;
   }
   while (1)
   {
@@ -146,10 +151,6 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
   if ( !tud_hid_ready() ) return;
   int8_t dx = 0;
   int8_t dy = 0;
-  int speed_up = 1;
-  int speed_down = 1;
-  int speed_l = 1;
-  int speed_r = 1;
 
   switch(report_id)
   {
@@ -178,12 +179,12 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
     {
       if(!mode){
         if ((!gpio_get(UPBUTTON)) && (gpio_get(DOWNBUTTON))){
-          speed_up -=5;
+          speed_up -=1;
           speed_down = 0;
           dy = speed_up;
         }
         else if ((gpio_get(UPBUTTON)) && (!gpio_get(DOWNBUTTON))){
-          speed_down += 5;
+          speed_down += 1;
           speed_up = 0;
           dy = speed_down;
         }
@@ -194,13 +195,13 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
         }
         
         if ((!gpio_get(LBUTTON)) && (gpio_get(RBUTTON))){
-          speed_l -=5;
+          speed_l -=1;
           speed_r = 0;
           dx = speed_l;
         }
         else if ((gpio_get(LBUTTON))&& (!gpio_get(RBUTTON))){
           speed_l = 0;
-          speed_r +=5;
+          speed_r +=1;
           dx = speed_r;
         }
         else if ((!gpio_get(LBUTTON)) && (!gpio_get(RBUTTON))){
@@ -216,18 +217,21 @@ static void send_hid_report(uint8_t report_id, uint32_t btn)
           mode = 1;
         }
         tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, dx, dy, 0,0);
-        sleep_ms(100);
+        sleep_ms(50);
       }
       if(mode){ // remote working mode
-        int i = 0;
-        int8_t x_mov = 5*cos(i); // moving down and right
-        int8_t y_mov = 5*sin(i);
+        int8_t x_mov = 20*cos(i); // moving down and right
+        int8_t y_mov = 20*sin(i);
         tud_hid_mouse_report(REPORT_ID_MOUSE, 0x00, x_mov, y_mov, 0, 0);
         if (!gpio_get(MODEBUTTON)){
           gpio_put(MODELED, 1);
           mode = 0;
         }
-        sleep_ms(100);
+        i++;
+        if (i>=360){
+          i = 0;
+        }
+        sleep_ms(50);
       }
 
 
