@@ -2,6 +2,9 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "helper.h"
+#include "ssd1306.h"
+#include "display.h"
+
 
 // I2C defines
 // This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
@@ -28,13 +31,19 @@ int main()
     gpio_pull_up(I2C_SCL);
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
 
+    init_imu(); // turn on chip and config accel and gyro
     // check that the address is correct
     check_address();
 
-    init_imu(); // turn on chip and config accel and gyro
-
     while (true) {
-
+        uint16_t accel_x = read_accel(X_DIR);
+        uint16_t accel_y = read_accel(Y_DIR);
+        uint16_t accel_z = read_accel(Z_DIR);
+        uint16_t gyro_x = read_gyro(X_DIR);
+        uint16_t gyro_y = read_gyro(Y_DIR);
+        uint16_t gyro_z = read_gyro(Z_DIR);
+        printf("x = %u , y = %u , z = %u\n", accel_x, accel_y, accel_z);
+        sleep_ms(100);
     }
 }
 

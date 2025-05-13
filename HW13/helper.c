@@ -2,11 +2,18 @@
 #include "pico/stdlib.h"
 #include "hardware/i2c.h"
 #include "helper.h"
+#include "ssd1306.h"
+#include "display.h"
+
 
 // check that the address of the imu is correct
 void check_address(void){
-    char buf;
-    i2c_read_blocking(i2c1, WHO_AM_I, &buf, 1, false);  // false - finished with bus
+    printf("working");
+    unsigned char reg = 0x75;
+    unsigned char buf;
+    i2c_write_blocking(i2c1, IMU_ADDR, &reg, 1, true);  // true to keep master control of bus
+    i2c_read_blocking(i2c1, IMU_ADDR, &buf, 1, false);  // false - finished with bus
+    printf("%c", buf);
     if (buf != 0x68){
         while(true){
             printf("Error connecting to IMU\n");
@@ -17,22 +24,26 @@ void check_address(void){
 
 // initialize the power saving, acceleration, and gyroscope configuration
 void init_imu(void){
+    printf("initializing,,,");
     char power = 0x00;
-    i2c_write_blocking(i2c1, PWR_MGMT_1, &power, 1, false);
+    i2c_write_blocking(i2c1, IMU_ADDR, &power, 1, true);
+    printf("power done");
     char accel = 0x07;
-    i2c_write_blocking(i2c1, ACCEL_CONFIG, &accel, 1, false);
+    i2c_write_blocking(i2c1, IMU_ADDR, &accel, 1, true);
+    printf("accel done");
     char gyro = 0x18;
-    i2c_write_blocking(i2c1, GYRO_CONFIG, &gyro, 1, false);
+    i2c_write_blocking(i2c1, IMU_ADDR, &gyro, 1, false);
+    printf("finished initializing");
 }
 
 
-// read the value of an input on i2c
+// read the value of an input on i2c (units of g)
 uint16_t read_accel(int dir){
     unsigned char reg = 0x3B;
     unsigned char buf[14];
 
     i2c_write_blocking(i2c1, IMU_ADDR, &reg, 14, true);  // true to keep master control of bus
-    i2c_read_blocking(i2c1, IMU_ADDR, &buf, 14, false);  // false - finished with bus
+    i2c_read_blocking(i2c1, IMU_ADDR, buf, 14, false);  // false - finished with bus
 
     uint16_t x_accel = (buf[0]<<8)|(buf[1]);
     uint16_t y_accel = (buf[2]<<8)|(buf[3]);
@@ -52,13 +63,13 @@ uint16_t read_accel(int dir){
 // save in signed 16-bit number
 // multiply by precalculated numbers
 
-
+// read the angular velocity (degrees per second)
 uint16_t read_gyro(int dir){
     unsigned char reg = 0x3B;
     unsigned char buf[14];
 
     i2c_write_blocking(i2c1, IMU_ADDR, &reg, 14, true);  // true to keep master control of bus
-    i2c_read_blocking(i2c1, IMU_ADDR, &buf, 14, false);  // false - finished with bus
+    i2c_read_blocking(i2c1, IMU_ADDR, buf, 14, false);  // false - finished with bus
 
     uint16_t x_angle = (buf[8]<<8)|(buf[9]);
     uint16_t y_angle = (buf[10]<<8)|(buf[11]);
@@ -73,6 +84,3 @@ uint16_t read_gyro(int dir){
 }
 
 
-// draw line on OLED
-// depending on tilt, change line length
-// can separate components
