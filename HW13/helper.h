@@ -29,3 +29,5 @@
 
 char check_address(void);
 void init_imu(void);
+uint16_t read_accel(unsigned char address);
+uint16_t read_gyro(unsigned char address);
