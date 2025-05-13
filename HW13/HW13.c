@@ -31,9 +31,10 @@ int main()
     gpio_pull_up(I2C_SCL);
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
 
+    check_address();
     init_imu(); // turn on chip and config accel and gyro
     // check that the address is correct
-    check_address();
+
 
     while (true) {
         uint16_t accel_x = read_accel(X_DIR);
