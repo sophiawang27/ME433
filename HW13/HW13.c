@@ -11,6 +11,7 @@
 #define I2C_SCL 21
 
 
+
 int main()
 {
     stdio_init_all();
@@ -28,13 +29,7 @@ int main()
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
 
     // check that the address is correct
-    char address = check_address();
-    if (address != 0x68){
-        while(true){
-            printf("Error connecting to IMU\n");
-            sleep_ms(100);
-        }
-    }
+    check_address();
 
     init_imu(); // turn on chip and config accel and gyro
 

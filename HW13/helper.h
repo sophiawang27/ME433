@@ -23,11 +23,15 @@
 #define GYRO_ZOUT_H  0x47
 #define GYRO_ZOUT_L  0x48
 #define WHO_AM_I     0x75
+#define X_DIR        0
+#define Y_DIR        1
+#define Z_DIR        2
+#define IMU_ADDR     0x68
 
 #endif
 
 
-char check_address(void);
+void check_address(void);
 void init_imu(void);
-uint16_t read_accel(unsigned char address);
-uint16_t read_gyro(unsigned char address);
+uint16_t read_accel(int dir);
+uint16_t read_gyro(int dir);
