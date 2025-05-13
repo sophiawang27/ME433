@@ -25,3 +25,7 @@
 #define WHO_AM_I     0x75
 
 #endif
+
+
+char check_address(void);
+void init_imu(void);

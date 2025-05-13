@@ -6,9 +6,9 @@
 // I2C defines
 // This example will use I2C0 on GPIO8 (SDA) and GPIO9 (SCL) running at 400KHz.
 // Pins can be changed, see the GPIO function select table in the datasheet for information on GPIO assignments
-#define I2C_PORT i2c0
-#define I2C_SDA 8
-#define I2C_SCL 9
+#define I2C_PORT i2c1
+#define I2C_SDA 20
+#define I2C_SCL 21
 
 
 int main()
@@ -27,9 +27,19 @@ int main()
     gpio_pull_up(I2C_SCL);
     // For more examples of I2C use see https://github.com/raspberrypi/pico-examples/tree/master/i2c
 
+    // check that the address is correct
+    char address = check_address();
+    if (address != 0x68){
+        while(true){
+            printf("Error connecting to IMU\n");
+            sleep_ms(100);
+        }
+    }
+
+    init_imu(); // turn on chip and config accel and gyro
+
     while (true) {
-        printf("Hello, world!\n");
-        sleep_ms(1000);
+
     }
 }
 
