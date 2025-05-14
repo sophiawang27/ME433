@@ -33,5 +33,5 @@
 
 void check_address(void);
 void init_imu(void);
-uint16_t read_accel(int dir);
-uint16_t read_gyro(int dir);
+float read_accel(int dir);
+float read_gyro(int dir);
