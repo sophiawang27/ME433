@@ -82,3 +82,15 @@ float read_gyro(int dir){
 }
 
 
+// draw line on OLED
+// depending on tilt, change line length
+// can separate components
+// draw line in x direction for x acceleration
+void drawLine_x(float x_accel){
+
+}
+
+// draw line in y dir for y acceleration
+void drawLine_y(float y_accel){
+
+}
