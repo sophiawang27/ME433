@@ -57,8 +57,8 @@ int main()
         float gyro_z = read_gyro(Z_DIR);
         printf("x = %f , y = %f , z = %f\n", accel_x, accel_y, accel_z); // print accels
 
-        drawLines(accel_x, accel_y);
-        sleep_ms(100);
+        drawLines(accel_x, accel_y); // draw lines to represent current x and y accelerations
+        sleep_ms(50);
     }
 }
 

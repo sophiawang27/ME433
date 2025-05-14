@@ -90,15 +90,34 @@ void drawLines(float x_accel, float y_accel){
     ssd1306_clear();
     ssd1306_drawPixel(60, 15, 1); // around the middle of the screen
     ssd1306_update();
-    signed char length_x = 30*x_accel;
-    signed char length_y = 8*y_accel;
-    printf("%c, %c", length_x, length_y);
+    float x_new = x_accel;
+    if (x_accel<0.0){
+        x_new = -1.0*x_accel;
+    }
+    float y_new = y_accel;
+    if (y_accel<0.0){
+        y_new = -1.0*y_accel;
+    }
+    unsigned char length_x = 30*x_new;
+    unsigned char length_y = 10*y_new;
 
     for (int i=0; i<length_x; i++){
-        ssd1306_drawPixel(60-i,15, 1);
+        if (x_accel<0){
+            ssd1306_drawPixel(60+i,15, 1);
+        }
+        else{
+            ssd1306_drawPixel(60-i,15, 1);
+        }
+            
     }
     for (int j=0; j<length_y; j++){
-        ssd1306_drawPixel(60,15+(j), 1);
+        if (y_accel<0){
+            ssd1306_drawPixel(60,15-j, 1);
+        }
+        else{
+            ssd1306_drawPixel(60,15+j, 1);
+        }
+            
     }
     ssd1306_update();
 }
