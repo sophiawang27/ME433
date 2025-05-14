@@ -35,5 +35,4 @@ void check_address(void);
 void init_imu(void);
 float read_accel(int dir);
 float read_gyro(int dir);
-void drawLine_x(float x_accel);
-void drawLine_y(float y_accel);
+void drawLines(float x_accel, float y_accel);

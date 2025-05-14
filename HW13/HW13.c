@@ -48,9 +48,7 @@ int main()
     ssd1306_update();
 
     while (true) {
-        ssd1306_clear();
-        ssd1306_drawPixel(60, 15, 1);
-        ssd1306_update();
+
         float accel_x = read_accel(X_DIR);
         float accel_y = read_accel(Y_DIR);
         float accel_z = read_accel(Z_DIR);
@@ -58,10 +56,9 @@ int main()
         float gyro_y = read_gyro(Y_DIR);
         float gyro_z = read_gyro(Z_DIR);
         printf("x = %f , y = %f , z = %f\n", accel_x, accel_y, accel_z); // print accels
+
+        drawLines(accel_x, accel_y);
         sleep_ms(100);
-
-
-        ssd1306_update();
     }
 }
 

@@ -86,11 +86,19 @@ float read_gyro(int dir){
 // depending on tilt, change line length
 // can separate components
 // draw line in x direction for x acceleration
-void drawLine_x(float x_accel){
+void drawLines(float x_accel, float y_accel){
+    ssd1306_clear();
+    ssd1306_drawPixel(60, 15, 1); // around the middle of the screen
+    ssd1306_update();
+    signed char length_x = 30*x_accel;
+    signed char length_y = 8*y_accel;
+    printf("%c, %c", length_x, length_y);
 
-}
-
-// draw line in y dir for y acceleration
-void drawLine_y(float y_accel){
-
+    for (int i=0; i<length_x; i++){
+        ssd1306_drawPixel(60-i,15, 1);
+    }
+    for (int j=0; j<length_y; j++){
+        ssd1306_drawPixel(60,15+(j), 1);
+    }
+    ssd1306_update();
 }
