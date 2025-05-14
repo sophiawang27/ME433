@@ -47,15 +47,6 @@ int main()
     }
 }
 
-// use i2c_write_blocking and i2c_read_blocking
-// 14 unsigned chars sequentially in one buffer
-// left bitshift by 8 for high
-// OR with the low
-// save in signed 16-bit number
-// multiply by precalculated numbers
-
-// temp 25 C
-
 // draw line on OLED
 // depending on tilt, change line length
 // can separate components
