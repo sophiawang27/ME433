@@ -46,7 +46,7 @@ int main()
         char c;
         printf("Press '+' or '-' to edit duty cycle\n");
         scanf("%c\n", &c);
-        if (c=='='){
+        if (c=='='){ // using = instead of + because of the shift button
             duty_cycle +=1.0;
             if (duty_cycle >100){
                 duty_cycle = 100;
