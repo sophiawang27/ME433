@@ -71,22 +71,22 @@ void set_dutycycle(float duty_cycle){
     uint16_t wrap = 30000; // fixed PWM period
     if (duty_cycle>0.0){
         pwm_set_gpio_level(IN1_PIN, wrap*((duty_cycle) / 100.0));
-        gpio_put(IN2_PIN, 0);
+        pwm_set_gpio_level(IN2_PIN, 0);
         pwm_set_gpio_level(IN3_PIN, wrap*((duty_cycle) / 100.0));
-        gpio_put(IN4_PIN, 0);
+        pwm_set_gpio_level(IN4_PIN, 0);
       
     }
     else if (duty_cycle<0.0){
-        gpio_put(IN1_PIN, 0);
+        pwm_set_gpio_level(IN1_PIN, 0);
         pwm_set_gpio_level(IN2_PIN, wrap*((-duty_cycle) / 100.0));
-        gpio_put(IN3_PIN, 0);
+        pwm_set_gpio_level(IN3_PIN, 0);
         pwm_set_gpio_level(IN4_PIN, wrap*((-duty_cycle) / 100.0)); 
     }
     else{
         pwm_set_gpio_level(IN1_PIN, 0);
-        gpio_put(IN2_PIN, 0);
+        pwm_set_gpio_level(IN2_PIN, 0);
         pwm_set_gpio_level(IN3_PIN, 0);
-        gpio_put(IN4_PIN, 0);
+        pwm_set_gpio_level(IN2_PIN, 0);
     }
 
 }
