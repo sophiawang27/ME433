@@ -126,7 +126,7 @@ void gpio_callback(uint gpio, uint32_t events) {
 }
 
 
-void set_dutycycle(void);
+void LED_controller(void);
 
 int main()
 {
@@ -171,7 +171,7 @@ int main()
             green_row[i] = picture.g[29,i];
             //printf("%u\n", green_row[i]);
         }
-        
+        LED_controller();
         //printImage();
         sleep_ms(150);
     }
@@ -179,8 +179,10 @@ int main()
 
 
 // LED PWM (green)
-void set_dutycycle(void){
+void LED_controller(void){
     uint16_t wrap = 6250; // fixed PWM period (20kHz freq)
+    float duty_left;
+    float duty_right;
     if (duty_cycle>0.0){
         pwm_set_gpio_level(IN1_PIN, 0);
         pwm_set_gpio_level(IN2_PIN, wrap*((duty_cycle) / 100.0)); //requires 67% to start moving
