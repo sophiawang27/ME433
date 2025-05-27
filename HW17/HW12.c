@@ -34,6 +34,10 @@
 #define RST 12
 // PWDN to float (or GND?)
 
+static float M;
+static float S;
+static float W; 
+
 // RGB565 example:
 // https://blog.usedbytes.com/2022/02/pico-pio-camera/
 
@@ -122,7 +126,7 @@ void gpio_callback(uint gpio, uint32_t events) {
 }
 
 
-void set_dutycycle(float duty_cycle);
+void set_dutycycle(void);
 
 int main()
 {
@@ -163,7 +167,10 @@ int main()
         convertImage();
 
         // LED controller
-
+        uint8_t green_row[80];
+        for (int i=0; i<80; i++){
+            green_row[i] = picture.g[i];
+        }
 
 
         printImage();
@@ -171,33 +178,24 @@ int main()
 }
 
 
-// LED PWM
-void set_dutycycle(float duty_cycle){
+// LED PWM (green)
+void set_dutycycle(void){
     uint16_t wrap = 6250; // fixed PWM period (20kHz freq)
     if (duty_cycle>0.0){
         pwm_set_gpio_level(IN1_PIN, 0);
         pwm_set_gpio_level(IN2_PIN, wrap*((duty_cycle) / 100.0)); //requires 67% to start moving
-        pwm_set_gpio_level(IN3_PIN, wrap*((duty_cycle) / 100.0));
-        pwm_set_gpio_level(IN4_PIN, 0);
       
     }
     else if (duty_cycle<0.0){
-
         pwm_set_gpio_level(IN1_PIN, wrap*((-duty_cycle) / 100.0)); // requires -66% to start moving
-        pwm_set_gpio_level(IN2_PIN, 0);
-        pwm_set_gpio_level(IN3_PIN, 0);
-        pwm_set_gpio_level(IN4_PIN, wrap*((-duty_cycle) / 100.0)); 
+        pwm_set_gpio_level(LED, 0);
     }
     else{
-        pwm_set_gpio_level(IN1_PIN, 0);
-        pwm_set_gpio_level(IN2_PIN, 0);
-        pwm_set_gpio_level(IN3_PIN, 0);
-        pwm_set_gpio_level(IN2_PIN, 0);
+        pwm_set_gpio_level(LEDL_PIN, 0);
+        pwm_set_gpio_level(LEDR_PIN, 0);
     }
 
 }
-
-
 
 
 // setup the camera pins
