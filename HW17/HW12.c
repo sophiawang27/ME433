@@ -127,6 +127,7 @@ void gpio_callback(uint gpio, uint32_t events) {
 
 
 void LED_controller(void);
+uint8_t green_row[80];
 
 int main()
 {
@@ -166,7 +167,6 @@ int main()
         convertImage();
         // LED controller
         // first get one row of the image
-        uint8_t green_row[80];
         for (int i=0; i<80; i++){
             green_row[i] = picture.g[29,i];
             //printf("%u\n", green_row[i]);
@@ -183,19 +183,32 @@ void LED_controller(void){
     uint16_t wrap = 6250; // fixed PWM period (20kHz freq)
     float duty_left;
     float duty_right;
-    if (duty_cycle>0.0){
-        pwm_set_gpio_level(IN1_PIN, 0);
-        pwm_set_gpio_level(IN2_PIN, wrap*((duty_cycle) / 100.0)); //requires 67% to start moving
+
+    // calculating the threshold
+    int sum_green=0;
+    for (int i=0; i<80; i++){ // find the average value for the threshold
+        sum_green += green_row[i];
+    }
+    int avg_green = sum_green / 80;
+    volatile float threshold = (float)(avg_green) * 1.2;
+
+    // determine the 
+    if ()
+
+
+    // if (duty_cycle>0.0){
+    //     pwm_set_gpio_level(IN1_PIN, 0);
+    //     pwm_set_gpio_level(IN2_PIN, wrap*((duty_cycle) / 100.0)); //requires 67% to start moving
       
-    }
-    else if (duty_cycle<0.0){
-        pwm_set_gpio_level(IN1_PIN, wrap*((-duty_cycle) / 100.0)); // requires -66% to start moving
-        pwm_set_gpio_level(LED, 0);
-    }
-    else{
-        pwm_set_gpio_level(LEDL_PIN, 0);
-        pwm_set_gpio_level(LEDR_PIN, 0);
-    }
+    // }
+    // else if (duty_cycle<0.0){
+    //     pwm_set_gpio_level(IN1_PIN, wrap*((-duty_cycle) / 100.0)); // requires -66% to start moving
+    //     pwm_set_gpio_level(LED, 0);
+    // }
+    // else{
+    //     pwm_set_gpio_level(LEDL_PIN, 0);
+    //     pwm_set_gpio_level(LEDR_PIN, 0);
+    // }
 
 }
 
