@@ -209,13 +209,12 @@ void LED_controller(void){
     // use the binary values to find location of com
     int com = sum_vals / sum_bin_vals; 
     
-    // relationship between white line value P and the centerline of the camera
+    // relationship between com of white line and the centerline of the camera
+    int P = com-40;
 
-
-
-    // establishing duty cycles depending on the relationship above
-    // p is too low, need to turn left, higher left duty, lower right duty
-    // p too high, need to turn right, lower left duty, higher right duty
+    // establishing duty cycles depending on the relationship above, using 3 gains (M, S, W)
+    // p is too low (negative), need to turn left, higher left duty, lower right duty
+    // p too high (positive), need to turn right, lower left duty, higher right duty
 
     // if (duty_cycle>0.0){
     //     pwm_set_gpio_level(IN1_PIN, 0);
