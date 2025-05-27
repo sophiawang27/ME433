@@ -192,9 +192,30 @@ void LED_controller(void){
     int avg_green = sum_green / 80;
     volatile float threshold = (float)(avg_green) * 1.2;
 
-    // determine the 
-    if ()
+    // loop thru to determine the location of the com
+    int bin_vals[80];
+    int sum_bin_vals;
+    int sum_vals;
+    for (int j=0; j<80; j++){
+        if (green_row[j]<threshold){// compare each value to the threshold, store into new array of binary vals (0=no green, 1=green)
+            bin_vals[j] = 0;
+        }
+        else{
+            bin_vals[j] = 1;
+        }
+        sum_vals += (bin_vals[j])*j;
+        sum_bin_vals += bin_vals[j];
+    }
+    // use the binary values to find location of com
+    int com = sum_vals / sum_bin_vals; 
+    
+    // relationship between white line value P and the centerline of the camera
 
+
+
+    // establishing duty cycles depending on the relationship above
+    // p is too low, need to turn left, higher left duty, lower right duty
+    // p too high, need to turn right, lower left duty, higher right duty
 
     // if (duty_cycle>0.0){
     //     pwm_set_gpio_level(IN1_PIN, 0);
