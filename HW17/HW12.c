@@ -158,22 +158,22 @@ int main()
     pwm_set_gpio_level(LEDR_PIN, 0); // start with 0% duty
  
     while (true) {
-        //sleep_ms(1000);
         char m[10];
         scanf("%s",m);
         setSaveImage(1);
         while(getSaveImage()==1){}
         //printf("HS count = %d PixelCount = %d\n",getHSCount(), getPixelCount());
         convertImage();
-
         // LED controller
+        // first get one row of the image
         uint8_t green_row[80];
         for (int i=0; i<80; i++){
-            green_row[i] = picture.g[i];
+            green_row[i] = picture.g[29,i];
+            //printf("%u\n", green_row[i]);
         }
-
-
-        printImage();
+        
+        //printImage();
+        sleep_ms(150);
     }
 }
 
