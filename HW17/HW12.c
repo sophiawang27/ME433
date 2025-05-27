@@ -34,9 +34,9 @@
 #define RST 12
 // PWDN to float (or GND?)
 
-static float M;
-static float S;
-static float W; 
+static float M=1;
+static float S=1;
+static float W=10; 
 
 // RGB565 example:
 // https://blog.usedbytes.com/2022/02/pico-pio-camera/
@@ -181,8 +181,6 @@ int main()
 // LED PWM (green)
 void LED_controller(void){
     uint16_t wrap = 6250; // fixed PWM period (20kHz freq)
-    float duty_left;
-    float duty_right;
 
     // calculating the threshold
     int sum_green=0;
@@ -213,9 +211,22 @@ void LED_controller(void){
     int P = com-40;
 
     // establishing duty cycles depending on the relationship above, using 3 gains (M, S, W)
-    // p is too low (negative), need to turn left, higher left duty, lower right duty
-    // p too high (positive), need to turn right, lower left duty, higher right duty
+    float duty_left;
+    float duty_right;
+    if (P < 0){     // p is too low (negative), need to turn left, higher left duty, lower right duty
 
+
+
+    }
+    else if (P > 0){     // p too high (positive), need to turn right, lower left duty, higher right duty
+
+    }
+    else{ // P is dead center, go fast
+        
+        
+    }
+    pwm_set_gpio_level(LEDL_PIN, wrap*((duty_left) / 100.0)); 
+    pwm_set_gpio_level(LEDR_PIN, wrap*((duty_right) / 100.0));
     // if (duty_cycle>0.0){
     //     pwm_set_gpio_level(IN1_PIN, 0);
     //     pwm_set_gpio_level(IN2_PIN, wrap*((duty_cycle) / 100.0)); //requires 67% to start moving
