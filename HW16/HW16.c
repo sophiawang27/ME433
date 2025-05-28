@@ -7,6 +7,8 @@
 #define IN2_PIN 27
 #define IN3_PIN 20
 #define IN4_PIN 21
+// left is in1 and in2
+// right is in3 and in4
 
 void set_dutycycle(float duty_cycle);
 
@@ -54,27 +56,28 @@ int main()
 
     while (true) {
         char c;
-        printf("Press '+' or '-' to edit duty cycle\n");
-        scanf("%c\n", &c);
-        if (c=='='){ // using = instead of + because of the shift button
-            duty_cycle +=1.0;
-            if (duty_cycle >100){
-                duty_cycle = 100;
-            }
-            set_dutycycle(duty_cycle);
-            printf("Duty cycle: %f\n", duty_cycle);
-        }
-        else if(c=='-'){
-            duty_cycle -=1.0;
-            if (duty_cycle <-100){
-                duty_cycle = -100;
-            }
-            set_dutycycle(duty_cycle);
-            printf("Duty cycle: %f\n", duty_cycle);
-        }
-        else{
-            printf("Incorrect symbol input\n");
-        }
+        set_dutycycle(90);
+        // printf("Press '+' or '-' to edit duty cycle\n");
+        // scanf("%c\n", &c);
+        // if (c=='='){ // using = instead of + because of the shift button
+        //     duty_cycle +=1.0;
+        //     if (duty_cycle >100){
+        //         duty_cycle = 100;
+        //     }
+        //     set_dutycycle(duty_cycle);
+        //     printf("Duty cycle: %f\n", duty_cycle);
+        // }
+        // else if(c=='-'){
+        //     duty_cycle -=1.0;
+        //     if (duty_cycle <-100){
+        //         duty_cycle = -100;
+        //     }
+        //     set_dutycycle(duty_cycle);
+        //     printf("Duty cycle: %f\n", duty_cycle);
+        // }
+        // else{
+        //     printf("Incorrect symbol input\n");
+        // }
         sleep_ms(100);
     }
 }
