@@ -34,9 +34,9 @@
 #define RST 12
 // PWDN to float (or GND?)
 
-static float M=1;
-static float S=1;
-static float W=10; 
+static float M=100.0; // maximum duty
+static float S=1.0; // slope of drop off
+static float W=10.0; // width of deadband
 
 // RGB565 example:
 // https://blog.usedbytes.com/2022/02/pico-pio-camera/
@@ -213,33 +213,42 @@ void LED_controller(void){
     // establishing duty cycles depending on the relationship above, using 3 gains (M, S, W)
     float duty_left;
     float duty_right;
-    if (P < 0){     // p is too low (negative), need to turn left, higher left duty, lower right duty
-
-
+    if (P < 0){     // p is too low (negative), need to turn left, higher right duty, lower left duty
+        if (-P <= (W/2)){ // left side of the graph
+            duty_left = S*-P;
+            duty_right = M;
+        }
+        if (-P > (W/2)){ // middle left portion of the graph
+            duty_left = M;
+            duty_right = M;
+        }
 
     }
-    else if (P > 0){     // p too high (positive), need to turn right, lower left duty, higher right duty
-
+    else if (P > 0){     // p too high (positive), need to turn right, lower right duty, higher left duty
+        if (P >= (W/2)){ // right side of the graph
+            duty_left = M;
+            duty_right = 
+        }
     }
     else{ // P is dead center, go fast
+        duty_left = M;
+        duty_right = M;
         
-        
+    }
+    if (duty_left >100.0){
+        duty_left = 100.0;
+    }
+    else if (duty_left < 0.0){
+        duty_left = 0.0;
+    }
+    if (duty_right>100.0){
+        duty_right = 100.0;
+    }
+    else if (duty_right < 0.0){
+        duty_right = 0.0;
     }
     pwm_set_gpio_level(LEDL_PIN, wrap*((duty_left) / 100.0)); 
     pwm_set_gpio_level(LEDR_PIN, wrap*((duty_right) / 100.0));
-    // if (duty_cycle>0.0){
-    //     pwm_set_gpio_level(IN1_PIN, 0);
-    //     pwm_set_gpio_level(IN2_PIN, wrap*((duty_cycle) / 100.0)); //requires 67% to start moving
-      
-    // }
-    // else if (duty_cycle<0.0){
-    //     pwm_set_gpio_level(IN1_PIN, wrap*((-duty_cycle) / 100.0)); // requires -66% to start moving
-    //     pwm_set_gpio_level(LED, 0);
-    // }
-    // else{
-    //     pwm_set_gpio_level(LEDL_PIN, 0);
-    //     pwm_set_gpio_level(LEDR_PIN, 0);
-    // }
 
 }
 

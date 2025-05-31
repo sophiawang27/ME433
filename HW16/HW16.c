@@ -49,14 +49,14 @@ int main()
     pwm_set_enabled(slice_num3, true);
     pwm_set_gpio_level(IN3_PIN, 0); // start with 0% duty
 
-    while (!stdio_usb_connected()) {
-        sleep_ms(100);
-    }
+    // while (!stdio_usb_connected()) {
+    //     sleep_ms(100);
+    // }
     float duty_cycle = 0.0;
 
     while (true) {
         char c;
-        set_dutycycle(90);
+        set_dutycycle(100);
         // printf("Press '+' or '-' to edit duty cycle\n");
         // scanf("%c\n", &c);
         // if (c=='='){ // using = instead of + because of the shift button
@@ -78,7 +78,7 @@ int main()
         // else{
         //     printf("Incorrect symbol input\n");
         // }
-        sleep_ms(100);
+        sleep_ms(1000);
     }
 }
 
