@@ -214,11 +214,11 @@ void LED_controller(void){
     float duty_left;
     float duty_right;
     if (P < 0){     // p is too low (negative), need to turn left, higher right duty, lower left duty
-        if (-P <= (W/2)){ // left side of the graph
+        if (P <= -(W/2)){ // left side of the graph
             duty_left = S*-P;
             duty_right = M;
         }
-        if (-P > (W/2)){ // middle left portion of the graph
+        if (P > -(W/2)){ // middle left portion of the graph
             duty_left = M;
             duty_right = M;
         }
@@ -227,7 +227,11 @@ void LED_controller(void){
     else if (P > 0){     // p too high (positive), need to turn right, lower right duty, higher left duty
         if (P >= (W/2)){ // right side of the graph
             duty_left = M;
-            duty_right = 
+            duty_right = (S*-P*(W/2)) + M; // negative slope
+        }
+        if (P < (W/2)){  // middle right portion of graph
+            duty_left = M;
+            duty_right = M;
         }
     }
     else{ // P is dead center, go fast
@@ -235,7 +239,7 @@ void LED_controller(void){
         duty_right = M;
         
     }
-    if (duty_left >100.0){
+    if (duty_left >100.0){ // set range for duty cycles
         duty_left = 100.0;
     }
     else if (duty_left < 0.0){
