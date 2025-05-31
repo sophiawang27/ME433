@@ -173,7 +173,7 @@ int main()
         }
         LED_controller();
         //printImage();
-        sleep_ms(150);
+        sleep_ms(100);
     }
 }
 
@@ -211,6 +211,7 @@ void LED_controller(void){
     int P = com-40;
 
     // establishing duty cycles depending on the relationship above, using 3 gains (M, S, W)
+    // the minimum duty cycle for movement is around 67% for the motors
     float duty_left;
     float duty_right;
     if (P < 0){     // p is too low (negative), need to turn left, higher right duty, lower left duty
