@@ -1,9 +1,7 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "hardware/i2c.h"
-#include "hardware/gpio.h"
+
 #include "hardware/pwm.h"
-// #include "ov7670.h"
 #include "cam.h"
 
 static float M=100.0; // maximum duty

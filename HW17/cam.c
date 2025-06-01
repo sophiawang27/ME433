@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
-#include "cam.h"
 #include "hardware/i2c.h"
 #include "hardware/gpio.h"
 #include "hardware/pwm.h"
+#include "cam.h"
 
 void gpio_callback(uint gpio, uint32_t events) {
     if (gpio == VS){
@@ -155,7 +155,7 @@ void init_camera(){
     }
 
     // set colorspace to RGB565
-    for(i=0; i<12; i++){
+    for(i=0; i<3; i++){
         OV7670_write_register(OV7670_rgb[i][0],OV7670_rgb[i][1]);
     }
 
