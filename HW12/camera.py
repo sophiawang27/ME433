@@ -1,4 +1,4 @@
-import pgzrun
+import pgzrun # pip install pgzero
 
 import serial
 ser = serial.Serial('COM6') # the name of your port here

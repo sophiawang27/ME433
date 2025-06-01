@@ -379,13 +379,16 @@ int main()
     init_camera_pins();
  
     while (true) {
-        //sleep_ms(1000);
+        sleep_ms(1000);
         char m[10];
         scanf("%s",m);
         setSaveImage(1);
         while(getSaveImage()==1){}
-        //printf("HS count = %d PixelCount = %d\n",getHSCount(), getPixelCount());
         convertImage();
+        int com = findLine(IMAGESIZEY/2); // calculate the position of the center of the ine
+        setPixel(IMAGESIZEY/2,com,0,255,0); // draw the center so you can see it in python
         printImage();
+        //printf("%d\r\n",com); // comment this when testing with python
+        //sleep_ms(200);
     }
 }
