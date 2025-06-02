@@ -23,7 +23,10 @@ int main()
     pwm_setup();
     while (true) {
         setSaveImage(1);
-        while(getSaveImage()==1){}
+        while(getSaveImage()==1){
+            printf("waiting\n");
+            sleep_ms(100);
+        }
         convertImage();
         int com = findLine(IMAGESIZEY/2); // calculate the position of the center of the ine
         setPixel(IMAGESIZEY/2,com,0,255,0); // draw the center so you can see it in python
