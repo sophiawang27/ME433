@@ -39,6 +39,7 @@
     "files.associations": {
         "stdlib.h": "c",
         "i2c.h": "c",
-        "gpio.h": "c"
+        "gpio.h": "c",
+        "pwm.h": "c"
     }
 }

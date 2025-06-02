@@ -2,6 +2,8 @@
 #include "pico/stdlib.h"
 #include "hardware/pwm.h"
 #include "cam.h"
+#include "hardware/i2c.h"
+#include "hardware/gpio.h"
 
 static float M=100.0; // maximum duty
 static float S=1.0; // slope of drop off
@@ -14,50 +16,11 @@ static float W=10.0; // width of deadband
 // left is in1 and in2
 // right is in3 and in4
 
-void Wheel_controller(int com);
-void set_dutycycle(float duty_cycleL, float duty_cycleR);
-uint8_t green_row[80];
-
 int main()
 {
     stdio_init_all();
-
     init_camera_pins();
-    stdio_init_all();
-    gpio_init(IN1_PIN);
-    gpio_set_function(IN1_PIN, GPIO_FUNC_PWM);
-    gpio_init(IN2_PIN);
-    gpio_set_function(IN2_PIN, GPIO_FUNC_PWM);
-    gpio_init(IN3_PIN);
-    gpio_set_function(IN3_PIN, GPIO_FUNC_PWM);
-    gpio_init(IN4_PIN);
-    gpio_set_function(IN4_PIN, GPIO_FUNC_PWM);
-
-    uint slice_num2 = pwm_gpio_to_slice_num(IN2_PIN);
-    float div = 1.0f;
-    pwm_set_clkdiv(slice_num2, div);
-    uint16_t wrap = 6250; // fixed PWM period 20kHz freq
-    pwm_set_wrap(slice_num2, wrap);
-    pwm_set_enabled(slice_num2, true);
-    pwm_set_gpio_level(IN2_PIN, 0); // start with 0% duty
-    // may need to add wrap for in4 for differential drive
-    uint slice_num4 = pwm_gpio_to_slice_num(IN4_PIN);
-    pwm_set_clkdiv(slice_num4, div);
-    pwm_set_wrap(slice_num4, wrap);
-    pwm_set_enabled(slice_num4, true);
-    pwm_set_gpio_level(IN4_PIN, 0); // start with 0% duty
-    uint slice_num1 = pwm_gpio_to_slice_num(IN1_PIN);
-    pwm_set_clkdiv(slice_num1, div);
-    pwm_set_wrap(slice_num1, wrap);
-    pwm_set_enabled(slice_num1, true);
-    pwm_set_gpio_level(IN1_PIN, 0); // start with 0% duty
-    uint slice_num3 = pwm_gpio_to_slice_num(IN3_PIN);
-    pwm_set_clkdiv(slice_num3, div);
-    pwm_set_wrap(slice_num3, wrap);
-    pwm_set_enabled(slice_num3, true);
-    pwm_set_gpio_level(IN3_PIN, 0); // start with 0% duty
-
-    float duty_cycle = 0.0;
+    pwm_setup();
     while (true) {
         setSaveImage(1);
         while(getSaveImage()==1){}
@@ -184,7 +147,6 @@ void gpio_callback(uint gpio, uint32_t events) {
         }
     }
 }
-
 // setup the camera pins
 void init_camera_pins(){
     // 8 data pins
@@ -238,9 +200,9 @@ void init_camera_pins(){
     gpio_pull_up(I2C_SDA);
     gpio_pull_up(I2C_SCL);
     
-    //printf("Start init camera\n");
+    printf("Start init camera\n");
     init_camera();
-    //printf("End init camera\n");
+    printf("End init camera\n");
 
     // interrupts
     gpio_init(VS); // vertical sync
@@ -357,10 +319,10 @@ void init_camera(){
     //sleep_ms(300);
 
     uint8_t p = OV7670_read_register(OV7670_REG_PID);
-    //printf("pid = %d (118)\n",p);
+    printf("pid = %d (118)\n",p);
 
     uint8_t v = OV7670_read_register(OV7670_REG_VER);
-    //printf("ver = %d (115)\n",v);
+    printf("ver = %d (115)\n",v);
 }
 
 // Selects one of the camera's test patterns (or disable).
@@ -524,5 +486,41 @@ void set_dutycycle(float duty_cycleL, float duty_cycleR){
         pwm_set_gpio_level(IN3_PIN, 0);
         pwm_set_gpio_level(IN2_PIN, 0);
     }
+
+}
+
+void pwm_setup(){
+    gpio_init(IN1_PIN);
+    gpio_set_function(IN1_PIN, GPIO_FUNC_PWM);
+    gpio_init(IN2_PIN);
+    gpio_set_function(IN2_PIN, GPIO_FUNC_PWM);
+    gpio_init(IN3_PIN);
+    gpio_set_function(IN3_PIN, GPIO_FUNC_PWM);
+    gpio_init(IN4_PIN);
+    gpio_set_function(IN4_PIN, GPIO_FUNC_PWM);
+
+    uint slice_num2 = pwm_gpio_to_slice_num(IN2_PIN);
+    float div = 1.0f;
+    pwm_set_clkdiv(slice_num2, div);
+    uint16_t wrap = 6250; // fixed PWM period 20kHz freq
+    pwm_set_wrap(slice_num2, wrap);
+    pwm_set_enabled(slice_num2, true);
+    pwm_set_gpio_level(IN2_PIN, 0); // start with 0% duty
+    // may need to add wrap for in4 for differential drive
+    uint slice_num4 = pwm_gpio_to_slice_num(IN4_PIN);
+    pwm_set_clkdiv(slice_num4, div);
+    pwm_set_wrap(slice_num4, wrap);
+    pwm_set_enabled(slice_num4, true);
+    pwm_set_gpio_level(IN4_PIN, 0); // start with 0% duty
+    uint slice_num1 = pwm_gpio_to_slice_num(IN1_PIN);
+    pwm_set_clkdiv(slice_num1, div);
+    pwm_set_wrap(slice_num1, wrap);
+    pwm_set_enabled(slice_num1, true);
+    pwm_set_gpio_level(IN1_PIN, 0); // start with 0% duty
+    uint slice_num3 = pwm_gpio_to_slice_num(IN3_PIN);
+    pwm_set_clkdiv(slice_num3, div);
+    pwm_set_wrap(slice_num3, wrap);
+    pwm_set_enabled(slice_num3, true);
+    pwm_set_gpio_level(IN3_PIN, 0); // start with 0% duty
 
 }

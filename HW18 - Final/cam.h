@@ -327,6 +327,8 @@ typedef enum {
 #define I2C_PORT i2c1
 #define I2C_SDA 14
 #define I2C_SCL 15
+#define LEDL_PIN 17
+#define LEDR_PIN 16
 
 // pins
 // D0-D7 on GP0-GP7
@@ -364,6 +366,8 @@ void convertImage();
 void printImage();
 int findLine(int row);
 void setPixel(int row, int col, uint8_t r, uint8_t g, uint8_t b);
+void Wheel_controller(int com);
+void set_dutycycle(float duty_cycleL, float duty_cycleR);
 
 static volatile uint8_t saveImage = 0; // user requests image
 static volatile uint8_t startImage = 0; // got a start of frame
@@ -386,6 +390,9 @@ static volatile struct cameraImage picture;
 void OV7670_write_register(uint8_t reg, uint8_t value);
 uint8_t OV7670_read_register(uint8_t reg);
 void OV7670_test_pattern(OV7670_pattern pattern);
+
+void pwm_setup(void);
+uint8_t green_row[80];
 
 
 
