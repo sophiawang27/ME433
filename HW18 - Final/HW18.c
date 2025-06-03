@@ -11,8 +11,8 @@ static float W=10.0; // width of deadband
 
 #define IN1_PIN 26
 #define IN2_PIN 27
-#define IN3_PIN 20
-#define IN4_PIN 21
+#define IN3_PIN 16
+#define IN4_PIN 17
 // left is in1 and in2
 // right is in3 and in4
 
@@ -24,8 +24,6 @@ int main()
     while (true) {
         setSaveImage(1);
         while(getSaveImage()==1){
-            printf("waiting\n");
-            sleep_ms(100);
         }
         convertImage();
         int com = findLine(IMAGESIZEY/2); // calculate the position of the center of the ine
@@ -58,7 +56,7 @@ void Wheel_controller(int com){
     float duty_right;
     if (P < 0){     // p is too low (negative), need to turn left, higher right duty, lower left duty
         if (P <= -(W/2)){ // left side of the graph
-            duty_left = S*-P;
+            duty_left = 65 + S*-P;
             duty_right = M;
         }
         if (P > -(W/2)){ // middle left portion of the graph

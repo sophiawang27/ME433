@@ -327,8 +327,6 @@ typedef enum {
 #define I2C_PORT i2c1
 #define I2C_SDA 14
 #define I2C_SCL 15
-#define LEDL_PIN 17
-#define LEDR_PIN 16
 
 // pins
 // D0-D7 on GP0-GP7
